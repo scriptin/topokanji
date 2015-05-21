@@ -17,6 +17,7 @@ var // directories
 var // files
   KANJI_LIST = DATA_DIR + 'kanji.txt',
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
+  CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt',
   KANJI_DEPENDENCIES = DATA_DIR + 'dependencies.txt',
   KANJI_RAW_DEPENDENCIES = DATA_DIR + RAW_DEPENDENCIES_ARG + '.txt';
 
@@ -63,29 +64,41 @@ var kanji = readKanjiList(KANJI_LIST);
 
 if (argv[RAW_DEPENDENCIES_ARG]) {
 
-  var decompositions = {};
+  var readCJK = function (fileName, decompositions) {
+    decompositions = decompositions || {};
+    fs.readFileSync(fileName, READ_UTF8)
+      .split('\n')
+      .forEach(function (line, i) {
+        if (line.trim().length !== 0) {
+          var parts = line.split(':'),
+            char = parts[0].trim(),
+            components = parts[1].split('(')[1].split(')')[0].split(',');
+          if (char === '') {
+            throw new Error('Decomposition rule with empty character in ' + fileName + ':' + (i + 1));
+          }
+          if (_.isEmpty(components)) {
+            throw new Error('Decomposition rule with empty list of components in ' + fileName + ':' + (i + 1));
+          }
+          decompositions[parts[0].trim()] = parts[1].split('(')[1].split(')')[0].split(',');
+        }
+      });
+    return decompositions;
+  };
 
-  fs.readFileSync(CJK, READ_UTF8)
-    .split('\n')
-    .forEach(function (line, i) {
-      if (line.trim().length !== 0) {
-        var parts = line.split(':');
-        decompositions[parts[0].trim()] = parts[1].split('(')[1].split(')')[0].split(',');
-      }
-    });
+  var decompositions = readCJK(CJK_OVERRIDE, readCJK(CJK));
 
-  var UNKNOWN = '?';
+  var UNKNOWN_CHAR = '!', EMPTY_CHAR = '0';
 
   var decompose = function (char, decompositions, list) {
     if (_.isArray(decompositions[char])) {
       return decompositions[char].map(function (c) {
-        if (_.contains(list, c)) {
+        if (_.contains(list, c) || c === EMPTY_CHAR) {
           return c;
         }
         return decompose(c, decompositions, list);
       });
     }
-    return UNKNOWN;
+    return UNKNOWN_CHAR;
   };
 
   var dependencies = _.uniq(
@@ -99,7 +112,7 @@ if (argv[RAW_DEPENDENCIES_ARG]) {
   );
 
   var missing = dependencies.filter(function (dep) {
-    return _.contains(dep, UNKNOWN);
+    return _.contains(dep, UNKNOWN_CHAR);
   });
   
   fs.unlinkSync(KANJI_RAW_DEPENDENCIES);
