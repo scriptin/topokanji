@@ -1,0 +1,24 @@
+{
+  "name": "topokanji",
+  "version": "0.1.0",
+  "description": "Kanji in topological order",
+  "private": true,
+  "main": "build.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "kanji",
+    "japanese",
+    "handwriting",
+    "calligraphy",
+    "radical",
+    "kangxi"
+  ],
+  "author": "Dmitry Shpika",
+  "license": "CC-BY-SA-4.0",
+  "dependencies": {
+    "lodash": "^3.9.1",
+    "minimist": "^1.1.1"
+  }
+}
