@@ -7,9 +7,6 @@ var
   fs = require('fs'),
   argv = require('minimist')(process.argv.slice(2));
 
-var // command-line args
-  RAW_DEPENDENCIES_ARG = 'raw-dependencies';
-
 var // directories
   DATA_DIR = './',
   KANJIVG_SVG_DIR = DATA_DIR + 'kanjivg/kanji/';
@@ -19,7 +16,7 @@ var // files
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt',
   KANJI_DEPENDENCIES = DATA_DIR + 'dependencies.txt',
-  KANJI_RAW_DEPENDENCIES = DATA_DIR + RAW_DEPENDENCIES_ARG + '.txt';
+  KANJI_RAW_DEPENDENCIES = DATA_DIR + 'raw-dependencies.txt';
 
 var // file operation modes
   READ_UTF8 = {mode: 'r', encoding: 'utf8'},
@@ -36,88 +33,105 @@ var kanjiVgChars = fs.readdirSync(KANJIVG_SVG_DIR)
     );
   });
 
-function checkKanjiVG(char, where) {
-  if (!_.contains(kanjiVgChars, char)) {
-    throw new Error('Character "' + char + '" in ' + where +
-                    ' is not included in KanjiVG project');
-  }
+function readLines(fileName) {
+  return fs.readFileSync(fileName, READ_UTF8)
+    .split('\n')
+    .map(function (line, i) {
+      return {
+        line: _.trimRight(line, '\r'), // in case of CRLF
+        fileName: fileName,
+        lineNumber: (i + 1),
+        location: fileName + ':' + (i + 1)
+      };
+    });
+}
+
+function isBlank(lineData) {
+  return /^\s*$/.test(lineData.line);
+}
+
+function readNonEmptyLines(fileName) {
+  return readLines(fileName).filter(_.negate(isBlank));
 }
 
 function readKanjiList(fileName) {
   var list = [];
-  fs.readFileSync(fileName, READ_UTF8)
-    .split('\n')
-    .forEach(function (line, i) {
-      line.split('').forEach(function (char) {
-        var where = fileName + ':' + (i + 1);
-        checkKanjiVG(char, where);
-        if (_.contains(list, char)) {
-          throw new Error('Duplicate "' + char + '" in ' + where);
-        }
-        list.push(char);
-      });
+  readNonEmptyLines(fileName).forEach(function (lineData) {
+    lineData.line.split('').forEach(function (char) {
+      if (!_.contains(kanjiVgChars, char)) {
+        throw new Error('Character "' + char + '" in ' + lineData.location +
+                        ' is not included in KanjiVG project');
+      }
+      if (_.contains(list, char)) {
+        throw new Error('Duplicate character "' + char + '" in ' + lineData.location);
+      }
+      list.push(char);
     });
+  });
   return list;
 }
 
 var kanji = readKanjiList(KANJI_LIST);
 
-if (argv[RAW_DEPENDENCIES_ARG]) {
-
-  var readCJK = function (fileName, decompositions) {
-    decompositions = decompositions || {};
-    fs.readFileSync(fileName, READ_UTF8)
-      .split('\n')
-      .forEach(function (line, i) {
-        if (line.trim().length !== 0) {
-          var parts = line.split(':'),
-            char = parts[0].trim(),
-            components = parts[1].split('(')[1].split(')')[0].split(',');
-          if (char === '') {
-            throw new Error('Decomposition rule with empty character in ' + fileName + ':' + (i + 1));
-          }
-          if (_.isEmpty(components)) {
-            throw new Error('Decomposition rule with empty list of components in ' + fileName + ':' + (i + 1));
-          }
-          decompositions[parts[0].trim()] = parts[1].split('(')[1].split(')')[0].split(',');
-        }
-      });
-    return decompositions;
+function parseCJKLine(line) {
+  var parts = line.split(':');
+  parts[1] = _.trimRight(parts[1], ')').split('(');
+  return {
+    char: parts[0],
+    op: parts[1][0],
+    components: parts[1][1].split(',')
   };
-
-  var decompositions = readCJK(CJK_OVERRIDE, readCJK(CJK));
-
-  var UNKNOWN_CHAR = '!', EMPTY_CHAR = '0';
-
-  var decompose = function (char, decompositions, list) {
-    if (_.isArray(decompositions[char])) {
-      return decompositions[char].map(function (c) {
-        if (_.contains(list, c) || c === EMPTY_CHAR) {
-          return c;
-        }
-        return decompose(c, decompositions, list);
-      });
-    }
-    return UNKNOWN_CHAR;
-  };
-
-  var dependencies = _.uniq(
-    _.flatten(
-      kanji.map(function (char) {
-        return _.flattenDeep(decompose(char, decompositions, kanji)).map(function (part) {
-          return char + part;
-        });
-      })
-    )
-  );
-
-  var missing = dependencies.filter(function (dep) {
-    return _.contains(dep, UNKNOWN_CHAR);
-  });
-  
-  fs.unlinkSync(KANJI_RAW_DEPENDENCIES);
-  console.log('Writing into ' + KANJI_RAW_DEPENDENCIES);
-  fs.writeFileSync(KANJI_RAW_DEPENDENCIES, dependencies.join('\n'), WRITE_UTF8);
-  console.log('Written ' + dependencies.length + ' lines, ' + missing.length + ' missing dependencies');
-
 }
+
+var CJK_LINE_REGEXP = /^\S+[:]\S+\((\S+([,]\S+)*)?\)$/;
+
+function readCJK(fileName, decompositions) {
+  decompositions = decompositions || {};
+  readNonEmptyLines(fileName)
+    .forEach(function (lineData) {
+      if (!CJK_LINE_REGEXP.test(lineData.line)) {
+        throw new Error('Line "' + lineData.line + '" in ' +
+                        lineData.location + ' has invalid format, ' +
+                        'must match ' + CJK_LINE_REGEXP);
+      }
+      var d = parseCJKLine(lineData.line);
+      decompositions[d.char] = d.components;
+    });
+  return decompositions;
+}
+
+var UNKNOWN_CHAR = '!', EMPTY_CHAR = '0';
+
+function decompose(char, decompositions, terminalChars) {
+  if (_.isEmpty(decompositions[char])) {
+    return '!';
+  }
+  return decompositions[char].map(function (c) {
+    if (_.contains(terminalChars, c) || (c === EMPTY_CHAR)) {
+      return c;
+    }
+    return decompose(c, decompositions, terminalChars);
+  });
+}
+
+var decompositions = readCJK(CJK_OVERRIDE, readCJK(CJK));
+
+var decomposeFlat = _.flow(decompose, _.flattenDeep, _.uniq);
+
+var dependencies = _.chain(kanji)
+  .map(function (char) {
+    return decomposeFlat(char, decompositions, kanji).map(function (part) {
+      return char + part;
+    });
+  })
+  .flatten()
+  .value();
+
+var missing = dependencies.filter(function (dep) {
+  return _.contains(dep, UNKNOWN_CHAR);
+});
+
+fs.unlinkSync(KANJI_RAW_DEPENDENCIES);
+console.log('Writing into ' + KANJI_RAW_DEPENDENCIES);
+fs.writeFileSync(KANJI_RAW_DEPENDENCIES, dependencies.join('\n'), WRITE_UTF8);
+console.log('Written ' + dependencies.length + ' lines, ' + missing.length + ' missing dependencies');
