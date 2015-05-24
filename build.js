@@ -37,9 +37,9 @@ function decompose(char, decompositions, terminalChars) {
 
 var decomposeFlat = _.flow(decompose, _.flattenDeep, _.uniq);
 
-var dependencies = _.chain(kanjiList)
+var dependencies = _.chain(kanjiList.list)
   .map(function (char) {
-    return decomposeFlat(char, decompositions, kanjiList).map(function (part) {
+    return decomposeFlat(char, decompositions, kanjiList.list).map(function (part) {
       return [char, part];
     });
   })
@@ -47,7 +47,7 @@ var dependencies = _.chain(kanjiList)
   .value();
 
 var missing = dependencies.filter(function (dep) {
-  return !(dep[1] === EMPTY_CHAR || _.contains(kanjiList, dep[1]));
+  return !(dep[1] === EMPTY_CHAR || _.contains(kanjiList.list, dep[1]));
 });
 
 if (missing.length > 0) {
