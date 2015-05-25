@@ -15,11 +15,12 @@ var // directories
 
 var // files
   KANJI_LIST = DATA_DIR + 'kanji.txt',
+  KANJI_FREQUENCY_LIST = DATA_DIR + 'frequency.txt',
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt';
 
 var kanjiVgChars = kanji.readKanjiVGList(KANJIVG_SVG_DIR);
-var kanjiList = kanji.readFromFile(KANJI_LIST, kanjiVgChars);
+var kanjiList = kanji.readFromFile(KANJI_LIST, KANJI_FREQUENCY_LIST, kanjiVgChars);
 var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
 
 var EMPTY_CHAR = '0';
@@ -59,11 +60,16 @@ if (missing.length > 0) {
   throw new Error('Fix mising dependencies and retry');
 }
 
-function strokeCount(char) {
-  return kanjiList.strokeCount[char];
+var maxFreqIndex = _.max(kanjiList.frequencyIndex) + 1;
+var maxStrokeCount = _.max(kanjiList.strokeCount);
+function weight(char) {
+  var
+    f = (kanjiList.frequencyIndex[char] || maxFreqIndex) / maxFreqIndex,
+    s = kanjiList.strokeCount[char] / maxStrokeCount;
+  return s * f;
 }
 
-var sorted = dag.toposort(dependencies, strokeCount).reverse();
+var sorted = dag.toposort(dependencies, weight).reverse();
 
 console.log(_.chain(sorted).without('0').chunk(50).map(function (row) {
   return row.join('');
