@@ -59,7 +59,11 @@ if (missing.length > 0) {
   throw new Error('Fix mising dependencies and retry');
 }
 
-var sorted = dag.toposort(dependencies).reverse();
+function strokeCount(char) {
+  return kanjiList.strokeCount[char];
+}
+
+var sorted = dag.toposort(dependencies, strokeCount).reverse();
 
 console.log(_.chain(sorted).without('0').chunk(50).map(function (row) {
   return row.join('');
