@@ -87,15 +87,22 @@ console.log(sorted.length + ' characters in the final list');
 
 var charsPerLine = argv[ARGS.charsPerLine] || 50;
 
-console.log('RESULT:');
-console.log(_.chain(sorted).chunk(charsPerLine).map(function (row) {
-  return row.join('');
-}).value().join('\n'));
+function splitInLines(chars, charsPerLine) {
+  return _.chunk(chars, charsPerLine)
+    .map(function (row) {
+      return row.join('');
+    }).join('\n');
+}
 
-console.log('KANJI NOT ON FREQUENCY LIST:');
-console.log(_.difference(
+console.log('RESULT:');
+console.log(splitInLines(sorted, charsPerLine));
+
+var notOnFreqList = _.difference(
   kanjiList.list,
   Object.keys(kanjiList.frequencyIndex)
-).join(''));
+);
+
+console.log('KANJI NOT ON FREQUENCY LIST:');
+console.log(splitInLines(notOnFreqList, charsPerLine));
 
 console.log('DONE');
