@@ -6,7 +6,8 @@ var
   _ = require('lodash'),
   argv = require('minimist')(process.argv.slice(2)),
   cjk = require('./lib/cjk'),
-  kanji = require('./lib/kanji');
+  kanji = require('./lib/kanji'),
+  dag = require('./lib/dag');
 
 var // directories
   DATA_DIR = './data/',
@@ -55,7 +56,13 @@ if (missing.length > 0) {
   missing.forEach(function (dep) {
     console.log(dep.join(' -> '));
   });
-  console.log(missing);
+  throw new Error('Fix mising dependencies and retry');
 }
+
+var sorted = dag.toposort(dependencies).reverse();
+
+console.log(_.chain(sorted).without('0').chunk(50).map(function (row) {
+  return row.join('');
+}).value().join('\n'));
 
 console.log('DONE');
