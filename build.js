@@ -84,4 +84,10 @@ console.log(_.chain(sorted).without('0').chunk(50).map(function (row) {
   return row.join('');
 }).value().join('\n'));
 
+console.log('KANJI NOT ON FREQUENCY LIST:');
+console.log(_.difference(
+  kanjiList.list,
+  Object.keys(kanjiList.frequencyIndex)
+).join(''));
+
 console.log('DONE');
