@@ -19,8 +19,13 @@ var // files
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt';
 
+console.log('Reading KanjiVG data...');
 var kanjiVgChars = kanji.readKanjiVGList(KANJIVG_SVG_DIR);
+
+console.log('Reading kanji lists...');
 var kanjiList = kanji.readFromFile(KANJI_LIST, KANJI_FREQUENCY_LIST, kanjiVgChars);
+
+console.log('Reading CJK decompositions...');
 var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
 
 var EMPTY_CHAR = '0';
@@ -39,6 +44,7 @@ function decompose(char, decompositions, terminalChars) {
 
 var decomposeFlat = _.flow(decompose, _.flattenDeep, _.uniq);
 
+console.log('Building list of dependencies...');
 var dependencies = _.chain(kanjiList.list)
   .map(function (char) {
     return decomposeFlat(char, decompositions, kanjiList.list).map(function (part) {
@@ -48,6 +54,7 @@ var dependencies = _.chain(kanjiList.list)
   .flatten()
   .value();
 
+console.log('Looking for missing/broken dependencies...');
 var missing = dependencies.filter(function (dep) {
   return !(dep[1] === EMPTY_CHAR || _.contains(kanjiList.list, dep[1]));
 });
@@ -69,8 +76,10 @@ function weight(char) {
   return s * f;
 }
 
+console.log('Sorting...');
 var sorted = dag.toposort(dependencies, weight).reverse();
 
+console.log('RESULT:');
 console.log(_.chain(sorted).without('0').chunk(50).map(function (row) {
   return row.join('');
 }).value().join('\n'));
