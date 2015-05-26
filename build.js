@@ -15,7 +15,7 @@ var // directories
 
 var // files
   KANJI_LIST = DATA_DIR + 'kanji.txt',
-  KANJI_FREQUENCY_LIST = DATA_DIR + 'frequency.txt',
+  KANJI_FREQUENCY_TABLE = DATA_DIR + 'kanji-frequency-wikipedia.json',
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt';
 
@@ -29,7 +29,7 @@ console.log('Reading KanjiVG data...');
 var kanjiVgChars = kanji.readKanjiVGList(KANJIVG_SVG_DIR);
 
 console.log('Reading kanji lists...');
-var kanjiList = kanji.readFromFile(KANJI_LIST, KANJI_FREQUENCY_LIST, kanjiVgChars);
+var kanjiData = kanji.readFromFile(KANJI_LIST, KANJI_FREQUENCY_TABLE, kanjiVgChars);
 
 console.log('Reading CJK decompositions...');
 var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
@@ -49,9 +49,9 @@ function decompose(char, decompositions, terminalChars) {
 var decomposeFlat = _.flow(decompose, _.flattenDeep, _.uniq);
 
 console.log('Building list of dependencies...');
-var dependencies = _.chain(kanjiList.list)
+var dependencies = _.chain(kanjiData.list)
   .map(function (char) {
-    return decomposeFlat(char, decompositions, kanjiList.list).map(function (part) {
+    return decomposeFlat(char, decompositions, kanjiData.list).map(function (part) {
       return [char, part];
     });
   })
@@ -60,7 +60,7 @@ var dependencies = _.chain(kanjiList.list)
 
 console.log('Looking for missing/broken dependencies...');
 var missing = dependencies.filter(function (dep) {
-  return !(dep[1] === EMPTY_CHAR || _.contains(kanjiList.list, dep[1]));
+  return !(dep[1] === EMPTY_CHAR || _.contains(kanjiData.list, dep[1]));
 });
 
 if (missing.length > 0) {
@@ -71,12 +71,12 @@ if (missing.length > 0) {
   throw new Error('Fix mising dependencies and retry');
 }
 
-var maxFreqIndex = _.max(kanjiList.frequencyIndex) + 1;
-var maxStrokeCount = _.max(kanjiList.strokeCount);
+var maxFreq = kanjiData.freqTable[1][2]; // 1st row is all kanji, 2nd is the most used one
+var maxStrokeCount = _.max(kanjiData.strokeCount);
 function weight(char) {
   var
-    f = (kanjiList.frequencyIndex[char] || maxFreqIndex) / maxFreqIndex,
-    s = kanjiList.strokeCount[char] / maxStrokeCount;
+    f = 1.0 - (kanjiData.frequency[char] || 0.0) / maxFreq,
+    s = kanjiData.strokeCount[char] / maxStrokeCount;
   return s * f;
 }
 
@@ -96,13 +96,5 @@ function splitInLines(chars, charsPerLine) {
 
 console.log('RESULT:');
 console.log(splitInLines(sorted, charsPerLine));
-
-var notOnFreqList = _.difference(
-  kanjiList.list,
-  Object.keys(kanjiList.frequencyIndex)
-);
-
-console.log('KANJI NOT ON FREQUENCY LIST:');
-console.log(splitInLines(notOnFreqList, charsPerLine));
 
 console.log('DONE');
