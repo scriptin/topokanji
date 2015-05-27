@@ -11,25 +11,27 @@ var
 
 var // directories
   DATA_DIR = './data/',
+  FREQ_TABLES_DIR = DATA_DIR + 'kanji-frequency/',
   KANJIVG_SVG_DIR = './kanjivg/kanji/';
 
 var // files
   KANJI_LIST = DATA_DIR + 'kanji.txt',
-  KANJI_FREQUENCY_TABLE = DATA_DIR + 'kanji-frequency-wikipedia.json',
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt';
 
 var EMPTY_CHAR = '0';
 
 var ARGS = {
-  charsPerLine: 'chars-per-line'
+  charsPerLine: 'chars-per-line',
+  useFreqTable: 'use-freq-table'
 };
 
 console.log('Reading KanjiVG data...');
 var kanjiVgChars = kanji.readKanjiVGList(KANJIVG_SVG_DIR);
 
 console.log('Reading kanji lists...');
-var kanjiData = kanji.readFromFile(KANJI_LIST, KANJI_FREQUENCY_TABLE, kanjiVgChars);
+var useFreqTable = argv[ARGS.useFreqTable] || 'aozora';
+var kanjiData = kanji.readFromFile(KANJI_LIST, FREQ_TABLES_DIR + useFreqTable + '.json', kanjiVgChars);
 
 console.log('Reading CJK decompositions...');
 var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
