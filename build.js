@@ -16,6 +16,7 @@ var // directories
 
 var // files
   KANJI_LIST = DATA_DIR + 'kanji.txt',
+  KANJIVG_LIST = DATA_DIR + 'kanjivg.txt',
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt';
 
@@ -26,12 +27,12 @@ var ARGS = {
   useFreqTable: 'use-freq-table'
 };
 
-console.log('Reading KanjiVG data...');
-var kanjiVgChars = kanji.readKanjiVGList(KANJIVG_SVG_DIR);
-
-console.log('Reading kanji lists...');
+console.log('Reading kanji lists and frequency table...');
 var useFreqTable = argv[ARGS.useFreqTable] || 'aozora';
-var kanjiData = kanji.readFromFile(KANJI_LIST, FREQ_TABLES_DIR + useFreqTable + '.json', kanjiVgChars);
+var kanjiData = kanji.readFromFile(
+  KANJI_LIST, KANJIVG_LIST, 
+  FREQ_TABLES_DIR + useFreqTable + '.json'
+);
 
 console.log('Reading CJK decompositions...');
 var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
