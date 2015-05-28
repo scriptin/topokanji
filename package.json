@@ -1,7 +1,7 @@
 {
   "name": "topokanji",
   "version": "0.1.0",
-  "description": "Kanji in topological order",
+  "description": "Topologically ordered list of kanji for effective learning",
   "private": true,
   "main": "build.js",
   "scripts": {
@@ -16,9 +16,9 @@
     "kangxi"
   ],
   "author": "Dmitry Shpika",
-  "license": "CC-BY-SA-4.0",
+  "license": "MIT",
   "dependencies": {
-    "lodash": "^3.9.1",
-    "minimist": "^1.1.1"
+    "lodash": "3.9.1",
+    "minimist": "1.1.1"
   }
 }
