@@ -1,6 +1,6 @@
 # TopoKanji
 
-**15 seconds explanation**: for people learning Japanese as a second language, learning kanji in "visual decomposition" order (e.g. "一->二->三", "言->五->口->語", etc.) is better than in the order taught by [JLPT][] levels or in Japanese schools. This project provides such lists of kanji.
+> **15 seconds explanation**: for people learning Japanese as a second language, learning kanji in "visual decomposition" order (e.g. `一 → 二 → 三`, `言 → 五 → 口 → 語`, etc.) is better than in the order taught by [JLPT][] levels or in Japanese schools. This project provides such lists of kanji.
 
 The goal of TopoKanji project is to provide people who want to learn Japanese [kanji][] with a properly ordered list of kanji which makes the learning process as fast, simple, and effective as possible.
 
