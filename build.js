@@ -1,5 +1,3 @@
-/*jslint node: true */
-/*jslint nomen: true */
 'use strict';
 
 var
@@ -48,7 +46,7 @@ function buildWeightFinction(freqData) {
       f = 1.0 - (freqData.frequency[char] || 0.0) / maxFreq,
       s = kanjiData.strokeCount[char] / maxStrokeCount;
     return s * f;
-  }
+  };
 }
 
 function buildList(freqTableName) {
