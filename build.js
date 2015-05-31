@@ -13,8 +13,7 @@ var
 var // directories
   FINAL_LISTS_DIR = './lists/',
   DATA_DIR = './data/',
-  FREQ_TABLES_DIR = DATA_DIR + 'kanji-frequency/',
-  KANJIVG_SVG_DIR = './kanjivg/kanji/';
+  FREQ_TABLES_DIR = DATA_DIR + 'kanji-frequency/';
 
 var // files
   KANJI_LIST = DATA_DIR + 'kanji.txt',
