@@ -4,6 +4,8 @@
 
 The goal of TopoKanji project is to provide people who want to learn Japanese [kanji][] with a properly ordered list of kanji which makes the learning process as fast, simple, and effective as possible.
 
+Motivation for this project initially came from reading this article: [The 5 Biggest Mistakes People Make When Learning Kanji][mistakes].
+
 Sample (first 100 kanji from [lists/aozora.txt](lists/aozora.txt)):
 
     人一乙丿丶亅丨二十入
@@ -158,6 +160,7 @@ This is a multi-license project. Choose any license from this list:
 - [ODC-By 1.0](http://opendatacommons.org/licenses/by/1.0/)
 - [Eclipse 1.0](https://www.eclipse.org/legal/epl-v10.html)
 
+[mistakes]: http://www.tofugu.com/2010/03/25/the-5-biggest-mistakes-people-make-when-learning-kanji/
 [jlpt]: http://www.jlpt.jp/e/
 [anki]: http://ankisrs.net/
 [kanji]: https://en.wikipedia.org/wiki/Kanji
