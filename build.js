@@ -7,6 +7,7 @@ var
   cjk = require('./lib/cjk'),
   deps = require('./lib/deps'),
   kanji = require('./lib/kanji'),
+  kanjiFreq = require('./lib/kanji-freq'),
   dag = require('./lib/dag'),
   format = require('./lib/format');
 
@@ -42,12 +43,8 @@ function buildWeightFinction(freqData) {
   };
 }
 
-function buildList(freqTableName) {
-  var freqTableFileName = FREQ_TABLES_DIR + freqTableName + '.json';
-  console.log('Reading kanji usage frequency data from ' + freqTableFileName + ' ...');
-  var freqData = kanji.readFreqData(freqTableFileName);
+function buildList(freqData) {
   var weightFuntion = buildWeightFinction(freqData);
-
   return _.without(
     dag.toposort(dependencies, weightFuntion),
     cjk.EMPTY_CHAR
@@ -56,11 +53,18 @@ function buildList(freqTableName) {
 
 if (argv[ARGS.overrideFinalLists]) {
 
+  var freqTables = {};
   fs.readdirSync(FREQ_TABLES_DIR).forEach(function (fileName) {
     var freqTableName = fileName.replace('.json', '');
+    var freqTableFileName = FREQ_TABLES_DIR + fileName;
+    console.log('Reading kanji usage frequency data from ' + freqTableFileName + ' ...');
+    freqTables[freqTableName] = kanjiFreq.readFreqData(freqTableFileName);
+  });
+
+  Object.keys(freqTables).forEach(function (freqTableName) {
     var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
     console.log('Building final list: ' + listFileName + ' ...');
-    var finalList = buildList(freqTableName);
+    var finalList = buildList(freqTables[freqTableName]);
     fs.writeFileSync(listFileName, format.splitInLines(finalList, 10));
   });
 
