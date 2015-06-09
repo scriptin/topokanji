@@ -131,7 +131,7 @@ Options:
 
 - (optional) `--chars-per-line=`, positive integer, default is `50`.
   Number of characters per line to display when printing a sorted list.
-- (optional) `--use-freq-table=`, possible values: `aozora` (default), `wikipedia`.
+- (optional) `--use-freq-table=`, possible values: `aozora` (default), `wikipedia`, `twitter`.
   Name of kanji frequency table to use.
 
 ### Building final lists
