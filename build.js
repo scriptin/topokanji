@@ -53,18 +53,25 @@ function buildList(freqData) {
 
 if (argv[ARGS.overrideFinalLists]) {
 
-  var freqTables = {};
+  var freqTables = [], freqDataSets = {};
   fs.readdirSync(FREQ_TABLES_DIR).forEach(function (fileName) {
     var freqTableName = fileName.replace('.json', '');
     var freqTableFileName = FREQ_TABLES_DIR + fileName;
     console.log('Reading kanji usage frequency data from ' + freqTableFileName + ' ...');
-    freqTables[freqTableName] = kanjiFreq.readFreqData(freqTableFileName);
+    var freqTable = kanjiFreq.readFreqTable(freqTableFileName);
+    freqTables.push(freqTable);
+    freqDataSets[freqTableName] = kanjiFreq.buildFreqData(freqTable);
   });
 
-  Object.keys(freqTables).forEach(function (freqTableName) {
+  console.log('Merging kanji usage frequency data...');
+  var freqTableAll = kanjiFreq.mergeFreqTables(freqTables);
+  freqTables.push(freqTableAll);
+  freqDataSets.all = kanjiFreq.buildFreqData(freqTableAll);
+
+  Object.keys(freqDataSets).forEach(function (freqTableName) {
     var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
     console.log('Building final list: ' + listFileName + ' ...');
-    var finalList = buildList(freqTables[freqTableName]);
+    var finalList = buildList(freqDataSets[freqTableName]);
     fs.writeFileSync(listFileName, format.splitInLines(finalList, 10));
   });
 
@@ -72,7 +79,7 @@ if (argv[ARGS.overrideFinalLists]) {
   
   var freqTableFileName = FREQ_TABLES_DIR + (argv[ARGS.useFreqTable] || 'aozora') + '.json';
   console.log('Reading kanji usage frequency data from ' + freqTableFileName + ' ...');
-  var freqData = kanjiFreq.readFreqData(freqTableFileName);
+  var freqData = kanjiFreq.buildFreqData(kanjiFreq.readFreqTable(freqTableFileName));
   var charsPerLine = argv[ARGS.charsPerLine] || 50;
   console.log('Building list...');
   var finalList = buildList(freqData);
