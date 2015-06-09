@@ -23,11 +23,9 @@ Final lists can be found in [`lists` directory](lists). Lists are only differ in
 
 You can use them to build an [Anki][] deck or just as a guidance. There are few options:
 
-- `aozora.txt` - if you're learning Japanese language primarily to be able to read Japanese novels.
-- `twitter.txt` - if you want to chat with your friends from Japan.
-- `wikipedia.txt` - if your goal is to be able to read documents in Japanese.
-
-I'm planning to build more lists later.
+- `aozora.txt` - if you're learning Japanese language primarily to be able to read Japanese novels
+- `twitter.txt` - if you want to chat with your friends from Japan
+- `wikipedia.txt` - if your goal is to be able to read documents in Japanese
 
 ## What is a properly ordered list of kanji?
 
@@ -54,7 +52,7 @@ Topological sorting is done by using a modified version of [Kahn (1962) algorith
 - Statistical data of kanji usage frequencies was gathered by processing data from various sources:
   - [Wikimedia Downloads][wiki-dumps] - snapshot of all pages and articles of Japanese Wikipedia
   - [Aozora Bunko][aozora] - large collection of Japanese literature
-  - [Twitter Streaming API][twitter-stream] - public stream of tweets, filtered by language and location
+  - [Twitter's Streaming API][twitter-stream] - public stream of tweets, filtered by language and location
 
 ## Which kanji are in the list
 
@@ -116,7 +114,7 @@ Kanji usage frequency data in [JSON][] format. Each file contain an array of arr
 Currently present data:
 
 - `aozora.json` - data from [Aozora Bunko][aozora], about 12900 files containing various works of Japanese literature (May 2015)
-- `twitter.json` - data from [Twitter Streaming API][twitter-stream], collected in about one week (June 2015) using a [bot][twitter-bot]
+- `twitter.json` - data from [Twitter's Streaming API][twitter-stream], collected in about one week (June 2015) using a [bot][twitter-bot]
 - `wikipedia.json` - data from [Wikimedia Downloads][wiki-dumps], full snapshot of Japanese Wikipedia (May 2015)
 
 ## Usage
