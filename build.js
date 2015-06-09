@@ -70,9 +70,12 @@ if (argv[ARGS.overrideFinalLists]) {
 
 } else { // not building yet
   
-  var freqTableName = argv[ARGS.useFreqTable] || 'aozora';
+  var freqTableFileName = FREQ_TABLES_DIR + (argv[ARGS.useFreqTable] || 'aozora') + '.json';
+  console.log('Reading kanji usage frequency data from ' + freqTableFileName + ' ...');
+  var freqData = kanjiFreq.readFreqData(freqTableFileName);
   var charsPerLine = argv[ARGS.charsPerLine] || 50;
-  var finalList = buildList(freqTableName);
+  console.log('Building list...');
+  var finalList = buildList(freqData);
 
   console.log('RESULT:');
   console.log(format.splitInLines(finalList, charsPerLine));
