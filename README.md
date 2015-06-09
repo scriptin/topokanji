@@ -8,16 +8,16 @@ Motivation for this project initially came from reading this article: [The 5 Big
 
 Sample (first 100 kanji from [lists/aozora.txt](lists/aozora.txt)):
 
-    人一乙丿丶亅丨二十入
-    大了子力上八儿七九乂
-    又丁刀冂囗口日乃几卜
-    匕厶厂勹冫凵匚冖亠卩
-    匸亻刂山出女三下小分
-    中方目見扌手川士土之
-    千万工久勺夕己丸心寸
-    丈亡今凡才干乞也弓巾
-    刃尸巳廴于广彳兀彡宀
-    个幺廾弋巛夂彑屮忄阝
+    人一二丨冂囗口目丿儿
+    見凵山出日十八木未来
+    大亅了子丶心土田思彳
+    行寸寺時上刀分厶禾私
+    中匚事丁可亻何自乂又
+    皮彼亠方三生彐門間扌
+    手言女本乙气気年者月
+    刂前勹冫豕冖宀家今卜
+    下白勺的云牛物立小文
+    矢知入乍作聿書学合幺
 
 Final lists can be found in [`lists` directory](lists). Lists are only differ in order of kanji. Each file contains kanji, grouped by 10 per line, starting from simplest.
 
@@ -26,6 +26,7 @@ You can use them to build an [Anki][] deck or just as a guidance. There are few 
 - `aozora.txt` - if you're learning Japanese language primarily to be able to read Japanese novels
 - `twitter.txt` - if you want to chat with your friends from Japan
 - `wikipedia.txt` - if your goal is to be able to read documents in Japanese
+- `all.txt` - combined "average" version of all previous. This one is experimental, I don't recommend using it
 
 ## What is a properly ordered list of kanji?
 
@@ -34,16 +35,11 @@ If you look at a kanji like 語, you can see it consists of at least three disti
 ### Properties of properly ordered lists
 
 1. **No kanji appear before it's parts (components).** In fact, in you treat kanji as nodes in a [graph][] structure, and connect them with directed edges, where each edge means "kanji A includes kanji B as a component", it all forms a [directed acyclic graph (DAG)][dag]. For any DAG, it is possible to build a [topological order][topsort], which is basically what "no kanji appear before it's parts" means.
-2. **Simpler kanji come first.** From my personal experience, it is very important for people who study [logographic characters][logogram] for the first time.
-3. **More frequently used kanji come first.** That way you learn useful characters as soon as possible.
+2. **More common kanji come first.** That way you learn useful characters as soon as possible.
 
 ### Algorithm
 
-The last two properties above are contradicting: some simple kanji are pretty rare, while some 10+ strokes kanji are ubiquitous. To deal with this, I modified a [topological sorting algorithm][topsort] so that both factors add to the "weight" of each character: the more complex and rare a kanji is, the less likely it appears in the beginning of a list. 
-
-The weighting formula is simple: `Weight = Complexity * Rarity`, where `Complexity` and `Rarity` are real numbers in range `[0, 1]`. Weight is used for sorting intermediate list of kanji during topological sorting.
-
-Topological sorting is done by using a modified version of [Kahn (1962) algorithm][kahn] with intermediate sorting step. See source code for details.
+[Topological sorting][topsort] is done by using a modified version of [Kahn (1962) algorithm][kahn] with intermediate sorting step which deals with the second property above. This intermediate sorting uses the "weight" of each character: common kanji (lighter) tend appear before rare kanji (heavier). See source code for details.
 
 ## Used data
 
@@ -63,7 +59,7 @@ Kanji is considered "common" if:
 - it is among the 2000-3000 most frequently used (according to some statistical data)
 - at least one of the following conditions are met:
   - it is among the [Jouyou kanji][jouyou]
-  - it is a [Kangxi radical][kangxi], but not a complex (by the number of strokes) one
+  - it is a [Kangxi radical][kangxi], but not a complex or rarely used one
   - it is used in common words (a tricky condition, don't rely just on this)
 
 ## Files and formats
