@@ -36,14 +36,9 @@ var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
 console.log('Building list of dependencies...');
 var dependencies = deps.buildDependencies(kanjiData.list, decompositions);
 
-function buildWeightFinction(freqData, kanjiData) {
-  var maxStrokeCount = _.max(kanjiData.strokeCount);
-  var maxFreq = freqData.freqTable[1][2]; // 1st row is all kanji, 2nd is the most used one
+function buildWeightFinction(freqData) {
   return function (char) {
-    var
-      f = 1.0 - (freqData.frequency[char] || 0.0) / maxFreq,
-      s = kanjiData.strokeCount[char] / maxStrokeCount;
-    return s * f;
+    return 1.0 - (freqData.frequency[char] || 0.0);
   };
 }
 
@@ -51,7 +46,7 @@ function buildList(freqTableName) {
   var freqTableFileName = FREQ_TABLES_DIR + freqTableName + '.json';
   console.log('Reading kanji usage frequency data from ' + freqTableFileName + ' ...');
   var freqData = kanji.readFreqData(freqTableFileName);
-  var weightFuntion = buildWeightFinction(freqData, kanjiData);
+  var weightFuntion = buildWeightFinction(freqData);
 
   return _.without(
     dag.toposort(dependencies, weightFuntion),
