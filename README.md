@@ -21,10 +21,11 @@ Sample (first 100 kanji from [lists/aozora.txt](lists/aozora.txt)):
 
 Final lists can be found in [`lists` directory](lists). Lists are only differ in order of kanji. Each file contains kanji, grouped by 10 per line, starting from simplest.
 
-You can use them to build an [Anki][] deck or just as a guidance.
+You can use them to build an [Anki][] deck or just as a guidance. There are few options:
 
-- Use `aozora.txt` if you're learning Japanese language primarily to be able to read Japanese novels.
-- Use `wikipedia.txt` if your goal is to be able to read documents in Japanese.
+- `aozora.txt` - if you're learning Japanese language primarily to be able to read Japanese novels.
+- `twitter.txt` - if you want to chat with your friends from Japan.
+- `wikipedia.txt` - if your goal is to be able to read documents in Japanese.
 
 I'm planning to build more lists later.
 
@@ -53,6 +54,7 @@ Topological sorting is done by using a modified version of [Kahn (1962) algorith
 - Statistical data of kanji usage frequencies was gathered by processing data from various sources:
   - [Wikimedia Downloads][wiki-dumps] - snapshot of all pages and articles of Japanese Wikipedia
   - [Aozora Bunko][aozora] - large collection of Japanese literature
+  - [Twitter Streaming API][twitter-stream] - public stream of tweets, filtered by language and location
 
 ## Which kanji are in the list
 
@@ -114,6 +116,7 @@ Kanji usage frequency data in [JSON][] format. Each file contain an array of arr
 Currently present data:
 
 - `aozora.json` - data from [Aozora Bunko][aozora], about 12900 files containing various works of Japanese literature (May 2015)
+- `twitter.json` - data from [Twitter Streaming API][twitter-stream], collected in about one week (June 2015) using a [bot][twitter-bot]
 - `wikipedia.json` - data from [Wikimedia Downloads][wiki-dumps], full snapshot of Japanese Wikipedia (May 2015)
 
 ## Usage
@@ -171,6 +174,8 @@ This is a multi-license project. Choose any license from this list:
 [kahn]: http://dl.acm.org/citation.cfm?doid=368996.369025
 [wiki-dumps]: https://dumps.wikimedia.org/
 [aozora]: http://www.aozora.gr.jp/
+[twitter-stream]: https://dev.twitter.com/streaming/overview
+[twitter-bot]: https://github.com/scriptin/twitter-kanji-frequency
 [jouyou]: https://en.wikipedia.org/wiki/J%C5%8Dy%C5%8D_kanji
 [kangxi]: https://en.wikipedia.org/wiki/Kangxi_radical
 [kanjivg]: http://kanjivg.tagaini.net/
