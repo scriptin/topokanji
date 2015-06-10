@@ -125,8 +125,11 @@ if (argv[ARGS.overrideFinalLists]) { // overriding final lists
     fs.writeFileSync(listFileName, format.splitInLines(finalList, 10));
   });
 
-} else if (argv[ARGS.suggest] && _.isNumber(argv[ARGS.suggest])) { // checking (un)common characters
+} else if (argv[ARGS.suggest]) { // checking (un)common characters
 
+  if (!_.isNumber(argv[ARGS.suggest]) || argv[ARGS.suggest] < 0 || (argv[ARGS.suggest] % 1 !== 0)) {
+    throw new Error('Argument --' + ARGS.suggest + ' must be positive integer');
+  }
   var candidatesCount = argv[ARGS.suggest];
   selectLists().forEach(function (freqTableName) {
     var freqData = freqDataSets[freqTableName];
