@@ -15,9 +15,9 @@ Sample (first 100 kanji from [lists/aozora.txt](lists/aozora.txt)):
     中匚事丁可亻何自乂又
     皮彼亠方三生彐門間扌
     手言女本乙气気年者月
-    刂前勹冫豕冖宀家今卜
-    下白勺的云牛物立小文
-    矢知入乍作聿書学合幺
+    刂前勹勿冫豕冖宀家今
+    卜下白勺的云牛物立小
+    文矢知入乍作聿書学合
 
 Final lists can be found in [`lists` directory](lists). Lists are only differ in order of kanji. Each file contains kanji, grouped by 10 per line, starting from simplest.
 
