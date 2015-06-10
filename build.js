@@ -77,7 +77,7 @@ function suggestAdd(candidatesCount, freqTableName, freqData, kanjiData) {
     })
     .take(candidatesCount)
     .map(function (row) {
-      return [row[0], (row[2] * 100).toFixed(2) + ' %'];
+      return [row[0], (row[2] * 100).toFixed(8) + ' %'];
     })
     .value();
 }
