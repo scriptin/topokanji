@@ -69,6 +69,7 @@ Files in `lists` directory are final lists. They contain kanji grouped by 10 per
 Files in `data` directory:
 
 - `kanji.txt` - list of kanji characters included in final ordered lists
+- `radicals.txt` - list of [radicals][kangxi] included in `kanji.txt`, but only those which are not common kanji by themselves. This file is intended to use as a list of exceptions when checking which characters are common
 - `kanjivg.txt` - list of kanji from [KanjiVG][]
 - `cjk-decomp-{VERSION}.txt` - data from [CJK Decompositions Data][cjk], without any modifications
 - `cjk-decomp-override.txt` - data to override some CJK's decompositions
@@ -78,12 +79,16 @@ All files are encoded in UTF-8, without [byte order mark (BOM)][bom]. All files,
 
 ### kanji.txt
 
-Contains initial list of kanji.
+Contains initial list of kanji, including radicals.
 
 - Each character must be listed in `kanjivg.txt`
 - Each character must be listed in one of `cjk-decomp-*.txt` files
 - Each character must appear on a line which number is equal to a number of strokes in the character
 - No extra whitespace or any other symbols, comments, etc.
+
+### radicals.txt
+
+List of [radicals][kangxi]. Must only contain characters which are also in `kanji.txt`, but must not contain radicals which are also common kanji by themselves. Organized the same way as `kanji.txt`.
 
 ### kanjivg.txt
 

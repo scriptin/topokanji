@@ -19,6 +19,7 @@ var // directories
 var // files
   KANJI_LIST = DATA_DIR + 'kanji.txt',
   KANJIVG_LIST = DATA_DIR + 'kanjivg.txt',
+  RADICALS_LIST = DATA_DIR + 'radicals.txt',
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt';
 
@@ -29,7 +30,7 @@ var ARGS = {
 };
 
 console.log('Reading kanji lists...');
-var kanjiData = kanji.readKanjiData(KANJI_LIST, KANJIVG_LIST);
+var kanjiData = kanji.readKanjiData(KANJI_LIST, KANJIVG_LIST, RADICALS_LIST);
 
 console.log('Reading CJK decompositions...');
 var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
