@@ -52,15 +52,24 @@ If you look at a kanji like 語, you can see it consists of at least three disti
 
 ## Which kanji are in the list
 
-Initial list contain only common kanji, because it is build for people who just started learning kanji.
+Initial list contain only common kanji and simple radicals, because it is build for people who just started learning kanji.
 
-Kanji is considered "common" if:
+Kanji is considered common if:
 
-- it is among the 2000-3000 most frequently used (according to some statistical data)
-- at least one of the following conditions are met:
-  - it is among the [Jouyou kanji][jouyou]
-  - it is a [Kangxi radical][kangxi], but not a complex or rarely used one
-  - it is used in common words (a tricky condition, don't rely just on this)
+- it is among the ~2500 most frequently used characters according to at least ony frequency table from `data/kanji-frequency`
+- it is **NOT**:
+  - a part of currently popular meme, manga/anime/dorama/movie title, #hashtag, etc., and otherwise is not commonly used
+  - mostly used in names (people, places, etc.) or in some specific terms (religion, mythology, etc.)
+  - mostly used because of its' shape, e.g. a part of text emoticons/kaomoji like `( ^ω^)个`
+
+Generally, the goal is provide something similar to [Jōyō kanji][jouyou], but based on actual data.
+
+Radical is considered common and simple if:
+
+- it has no more than ~10 strokes, except if it has some very unique shape not presented elsewhere
+- it is used in decompositions of at least 2-3 kanji characters from `data/kanji.txt`
+
+Note that if kanji or radicals is not present in KanjiVG project, it must not appear in lists even if it meets all conditions.
 
 ## Files and formats
 
