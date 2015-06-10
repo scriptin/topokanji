@@ -9,8 +9,8 @@ Motivation for this project initially came from reading this article: [The 5 Big
 Sample (first 100 kanji from [lists/aozora.txt](lists/aozora.txt)):
 
     人一二丨冂囗口目丿儿
-    見凵山出日十八木未来
-    大亅了子丶心土田思彳
+    見凵山出日十八木未丶
+    来大亅了子心土田思彳
     行寸寺時上刀分厶禾私
     中匚事丁可亻何自乂又
     皮彼亠方三生彐門間扌
