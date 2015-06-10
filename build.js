@@ -24,9 +24,9 @@ var // files
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt';
 
 var ARGS = {
-  charsPerLine: 'chars-per-line',
-  useFreqTable: 'use-freq-table',
-  overrideFinalLists: 'override-final-lists',
+  perLine: 'per-line',
+  freqTable: 'freq-table',
+  save: 'save',
   suggest: 'suggest'
 };
 
@@ -101,12 +101,12 @@ function suggestRemove(candidatesCount, freqTableName, freqData, kanjiData) {
 }
 
 function selectLists() {
-  if (_.isUndefined(argv[ARGS.useFreqTable])) {
+  if (_.isUndefined(argv[ARGS.freqTable])) {
     return Object.keys(freqDataSets);
-  } else if (_.isString(argv[ARGS.useFreqTable])) {
-    return [ argv[ARGS.useFreqTable] ];
+  } else if (_.isString(argv[ARGS.freqTable])) {
+    return [ argv[ARGS.freqTable] ];
   }
-  throw new Error('Ingavlid value for argument --' + ARGS.useFreqTable + ': ' + argv[ARGS.useFreqTable]);
+  throw new Error('Ingavlid value for argument --' + ARGS.freqTable + ': ' + argv[ARGS.freqTable]);
 }
 
 var unknownArgs = _.without(Object.keys(argv), '_').filter(function (arg) {
@@ -116,7 +116,7 @@ if (unknownArgs.length > 0) {
   throw new Error('Unknown arguments: ' + JSON.stringify(unknownArgs));
 }
 
-if (argv[ARGS.overrideFinalLists]) { // overriding final lists
+if (argv[ARGS.save]) { // overriding final lists
 
   selectLists().forEach(function (freqTableName) {
     var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
@@ -141,7 +141,7 @@ if (argv[ARGS.overrideFinalLists]) { // overriding final lists
 
 } else {
 
-  var charsPerLine = argv[ARGS.charsPerLine] || 50;
+  var charsPerLine = argv[ARGS.perLine] || 50;
   selectLists().forEach(function (freqTableName) {
     var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
     console.log('Building list: ' + freqTableName + ' ...');
