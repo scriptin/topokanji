@@ -143,12 +143,6 @@ You must have Node.js and Git installed
   - no argument or (optional) `--chars-per-line=NUM` (default 50) - only display sorted list without writing into file. Display `NUM` characters per one line of output
 - (optional) `--use-freq-table=TABLE_NAME` - preform operations mentioned above only for one frequency table name. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" list), `aozora`, etc. When omitted, all frequency tables are used
 
-## Contributing
-
-Consider *not* adding or removing kanji from the initial list. It is made for beginners, so don't include uncommon kanji or kanji used primarily in names. Remove kanji from the initial list *only* if you sure it's not common by any criteria.
-
-All other contributions, suggestions, fixes, and requests are welcome!
-
 ## License
 
 This is a multi-license project. Choose any license from this list:
