@@ -100,9 +100,9 @@ function suggestRemove(candidatesCount, freqTableName, freqData, kanjiData) {
     .value();
 }
 
-function whichLists() {
+function selectLists() {
   if (_.isUndefined(argv[ARGS.useFreqTable])) {
-    return _.without(Object.keys(freqDataSets), 'all');
+    return Object.keys(freqDataSets);
   } else if (_.isString(argv[ARGS.useFreqTable])) {
     return [ argv[ARGS.useFreqTable] ];
   }
@@ -118,7 +118,7 @@ if (unknownArgs.length > 0) {
 
 if (argv[ARGS.overrideFinalLists]) { // overriding final lists
 
-  whichLists().forEach(function (freqTableName) {
+  selectLists().forEach(function (freqTableName) {
     var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
     console.log('Writing list: ' + listFileName + ' ...');
     var finalList = buildList(freqDataSets[freqTableName]);
@@ -128,18 +128,18 @@ if (argv[ARGS.overrideFinalLists]) { // overriding final lists
 } else if (argv[ARGS.suggest] && _.isNumber(argv[ARGS.suggest])) { // checking (un)common characters
 
   var candidatesCount = argv[ARGS.suggest];
-  whichLists().forEach(function (freqTableName) {
+  selectLists().forEach(function (freqTableName) {
     var freqData = freqDataSets[freqTableName];
-    console.log(candidatesCount + ' candidates to be added into kanji list according to ' + freqTableName + ':');
+    console.log(candidatesCount + ' candidates to be added into kanji list according to "' + freqTableName + '":');
     console.log(suggestAdd(candidatesCount, freqTableName, freqData, kanjiData));
-    console.log(candidatesCount + ' candidates to be removed from kanji list according to ' + freqTableName + ':');
+    console.log(candidatesCount + ' candidates to be removed from kanji list according to "' + freqTableName + '":');
     console.log(suggestRemove(candidatesCount, freqTableName, freqData, kanjiData));
   });
 
 } else {
 
   var charsPerLine = argv[ARGS.charsPerLine] || 50;
-  whichLists().forEach(function (freqTableName) {
+  selectLists().forEach(function (freqTableName) {
     var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
     console.log('Building list: ' + freqTableName + ' ...');
     var freqData = freqDataSets[freqTableName];

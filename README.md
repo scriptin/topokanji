@@ -141,7 +141,7 @@ You must have Node.js and Git installed
   - `--override-final-lists` - write to files in `lists` directory
   - `--suggest=NUM` - suggest addition/deletion of `NUM` most/least frequently used characters into/from list (`data/kanji.txt`) according to kanji usage frequency tables
   - no argument or (optional) `--chars-per-line=NUM` (default 50) - only display sorted list without writing into file. Display `NUM` characters per one line of output
-- (optional) `--use-freq-table=TABLE_NAME` - preform operations mentioned above only for one frequency table name. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `aozora`, `twitter`, etc. When omitted, all frequency tables are used
+- (optional) `--use-freq-table=TABLE_NAME` - preform operations mentioned above only for one frequency table name. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" list), `aozora`, etc. When omitted, all frequency tables are used
 
 ## Contributing
 
