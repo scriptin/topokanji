@@ -26,11 +26,13 @@ var // files
 var ARGS = {
   charsPerLine: 'chars-per-line',
   useFreqTable: 'use-freq-table',
-  overrideFinalLists: 'override-final-lists'
+  overrideFinalLists: 'override-final-lists',
+  suggest: 'suggest'
 };
 
 console.log('Reading kanji lists...');
 var kanjiData = kanji.readKanjiData(KANJI_LIST, KANJIVG_LIST, RADICALS_LIST);
+console.log(kanjiData.list.length + ' kanji + ' + kanjiData.radicals.length + ' radicals');
 
 console.log('Reading CJK decompositions...');
 var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
@@ -52,42 +54,98 @@ function buildList(freqData) {
   ).reverse();
 }
 
-if (argv[ARGS.overrideFinalLists]) {
+var freqTables = [], freqDataSets = {};
+fs.readdirSync(FREQ_TABLES_DIR).forEach(function (fileName) {
+  var freqTableName = fileName.replace('.json', '');
+  var freqTableFileName = FREQ_TABLES_DIR + fileName;
+  console.log('Reading kanji usage frequency data from ' + freqTableFileName + ' ...');
+  var freqTable = kanjiFreq.readFreqTable(freqTableFileName);
+  freqTables.push(freqTable);
+  freqDataSets[freqTableName] = kanjiFreq.buildFreqData(freqTable);
+});
 
-  var freqTables = [], freqDataSets = {};
-  fs.readdirSync(FREQ_TABLES_DIR).forEach(function (fileName) {
-    var freqTableName = fileName.replace('.json', '');
-    var freqTableFileName = FREQ_TABLES_DIR + fileName;
-    console.log('Reading kanji usage frequency data from ' + freqTableFileName + ' ...');
-    var freqTable = kanjiFreq.readFreqTable(freqTableFileName);
-    freqTables.push(freqTable);
-    freqDataSets[freqTableName] = kanjiFreq.buildFreqData(freqTable);
-  });
+console.log('Merging kanji usage frequency data...');
+var freqTableAll = kanjiFreq.mergeFreqTables(freqTables);
+freqTables.push(freqTableAll);
+freqDataSets.all = kanjiFreq.buildFreqData(freqTableAll);
 
-  console.log('Merging kanji usage frequency data...');
-  var freqTableAll = kanjiFreq.mergeFreqTables(freqTables);
-  freqTables.push(freqTableAll);
-  freqDataSets.all = kanjiFreq.buildFreqData(freqTableAll);
+function suggestAdd(candidatesCount, freqTableName, freqData, kanjiData) {
+  return _.chain(freqData.freqTable)
+    .tail()
+    .filter(function (row) {
+      return !_.contains(kanjiData.list, row[0]);
+    })
+    .take(candidatesCount)
+    .map(function (row) {
+      return [row[0], (row[2] * 100).toFixed(2) + ' %'];
+    })
+    .value();
+}
 
-  Object.keys(freqDataSets).forEach(function (freqTableName) {
+function suggestRemove(candidatesCount, freqTableName, freqData, kanjiData) {
+  return _.chain(kanjiData.list)
+    .filter(function (char) {
+      return !_.contains(kanjiData.radicals, char);
+    })
+    .map(function (char) {
+      return [char, freqData.frequency[char] || 0];
+    })
+    .sortBy(function (row) {
+      return row[1];
+    })
+    .take(candidatesCount)
+    .map(function (row) {
+      return [row[0], (row[1] > 0) ? row[1].toFixed(8) + ' %' : 'missing'];
+    })
+    .value();
+}
+
+function whichLists() {
+  if (_.isUndefined(argv[ARGS.useFreqTable])) {
+    return _.without(Object.keys(freqDataSets), 'all');
+  } else if (_.isString(argv[ARGS.useFreqTable])) {
+    return [ argv[ARGS.useFreqTable] ];
+  }
+  throw new Error('Ingavlid value for argument --' + ARGS.useFreqTable + ': ' + argv[ARGS.useFreqTable]);
+}
+
+var unknownArgs = _.without(Object.keys(argv), '_').filter(function (arg) {
+  return !_.contains(ARGS, arg);
+});
+if (unknownArgs.length > 0) {
+  throw new Error('Unknown arguments: ' + JSON.stringify(unknownArgs));
+}
+
+if (argv[ARGS.overrideFinalLists]) { // overriding final lists
+
+  whichLists().forEach(function (freqTableName) {
     var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
-    console.log('Building final list: ' + listFileName + ' ...');
+    console.log('Writing list: ' + listFileName + ' ...');
     var finalList = buildList(freqDataSets[freqTableName]);
     fs.writeFileSync(listFileName, format.splitInLines(finalList, 10));
   });
 
-} else { // not building yet
-  
-  var freqTableFileName = FREQ_TABLES_DIR + (argv[ARGS.useFreqTable] || 'aozora') + '.json';
-  console.log('Reading kanji usage frequency data from ' + freqTableFileName + ' ...');
-  var freqData = kanjiFreq.buildFreqData(kanjiFreq.readFreqTable(freqTableFileName));
-  var charsPerLine = argv[ARGS.charsPerLine] || 50;
-  console.log('Building list...');
-  var finalList = buildList(freqData);
+} else if (argv[ARGS.suggest] && _.isNumber(argv[ARGS.suggest])) { // checking (un)common characters
 
-  console.log('RESULT:');
-  console.log(format.splitInLines(finalList, charsPerLine));
-  console.log('(' + finalList.length + ' characters)');
+  var candidatesCount = argv[ARGS.suggest];
+  whichLists().forEach(function (freqTableName) {
+    var freqData = freqDataSets[freqTableName];
+    console.log(candidatesCount + ' candidates to be added into kanji list according to ' + freqTableName + ':');
+    console.log(suggestAdd(candidatesCount, freqTableName, freqData, kanjiData));
+    console.log(candidatesCount + ' candidates to be removed from kanji list according to ' + freqTableName + ':');
+    console.log(suggestRemove(candidatesCount, freqTableName, freqData, kanjiData));
+  });
+
+} else {
+
+  var charsPerLine = argv[ARGS.charsPerLine] || 50;
+  whichLists().forEach(function (freqTableName) {
+    var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
+    console.log('Building list: ' + freqTableName + ' ...');
+    var freqData = freqDataSets[freqTableName];
+    var finalList = buildList(freqData);
+    console.log(format.splitInLines(finalList, charsPerLine));
+  });
 
 }
 

@@ -126,24 +126,13 @@ You must have Node.js and Git installed
 2. `npm install`
 3. `node build.js`
 
-### Testing data modifications
+### Command-line arguments
 
-    $ node build.js
-
-Does not change any files, only validates the data and writes to terminal.
-
-Options:
-
-- (optional) `--chars-per-line=`, positive integer, default is `50`.
-  Number of characters per line to display when printing a sorted list.
-- (optional) `--use-freq-table=`, possible values: `aozora` (default), `wikipedia`, `twitter`.
-  Name of kanji frequency table to use.
-
-### Building final lists
-
-    $ node build.js --override-final-lists
-
-This will override final lists in `lists` directory.
+- only one of following:
+  - `--override-final-lists` - write to files in `lists` directory
+  - `--suggest=NUM` - suggest addition/deletion of `NUM` most/least frequently used characters into/from list (`data/kanji.txt`) according to kanji usage frequency tables
+  - no argument or (optional) `--chars-per-line=NUM` (default 50) - only display sorted list without writing into file. Display `NUM` characters per one line of output
+- (optional) `--use-freq-table=TABLE_NAME` - preform operations mentioned above only for one frequency table name. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `aozora`, `twitter`, etc. When omitted, all frequency tables are used
 
 ## Contributing
 
