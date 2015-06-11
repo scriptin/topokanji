@@ -147,12 +147,11 @@ You must have Node.js and Git installed
 
 This is a multi-license project. Choose any license from this list:
 
-- [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/)
+- [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0) or any later version
+- [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/) or any later version
+- [EPL-1.0](https://www.eclipse.org/legal/epl-v10.html) or any later version
+- [LGPL-3.0](http://www.gnu.org/licenses/lgpl-3.0.html) or any later version
 - [MIT](http://opensource.org/licenses/MIT)
-- [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-- [LGPL 3.0](http://www.gnu.org/licenses/lgpl-3.0.html)
-- [ODC-By 1.0](http://opendatacommons.org/licenses/by/1.0/)
-- [Eclipse 1.0](https://www.eclipse.org/legal/epl-v10.html)
 
 [mistakes]: http://www.tofugu.com/2010/03/25/the-5-biggest-mistakes-people-make-when-learning-kanji/
 [jlpt]: http://www.jlpt.jp/e/
