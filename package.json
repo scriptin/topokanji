@@ -2,6 +2,10 @@
   "name": "topokanji",
   "version": "0.1.0",
   "description": "Topologically ordered list of kanji for effective learning",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/scriptin/topokanji.git"
+  },
   "private": true,
   "main": "build.js",
   "scripts": {
