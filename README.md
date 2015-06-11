@@ -119,7 +119,7 @@ Kanji usage frequency data in [JSON][] format. Each file contain an array of arr
 
 1. (string) Kanji itself. `"all"` is a special case in the first row.
 2. (integer) How many times it was found in the analyzed data set. For `"all"` it is a total number of kanji, including repetitions.
-3. (float) Fraction of total amount of data this character represents. For `"all"` it is `1` (e.i. 100%).
+3. (float) Fraction of total amount of data this character represents. For `"all"` it is `1` (i.e. 100%).
 
 Currently present data:
 
@@ -141,7 +141,7 @@ You must have Node.js and Git installed
   - `--save` - write to files in `lists` directory
   - `--suggest=NUM` - suggest addition/deletion of `NUM` most/least frequently used characters into/from list (`data/kanji.txt`) according to kanji usage frequency tables
   - no argument or (optional) `--per-line=NUM` (default 50) - only display sorted list without writing into file. Display `NUM` characters per one line of output
-- (optional) `--freq-table=TABLE_NAME` - preform operations mentioned above only for one frequency table name. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" list), `aozora`, etc. When omitted, all frequency tables are used
+- (optional) `--freq-table=TABLE_NAME` - perform operations mentioned above only for one frequency table name. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" list), `aozora`, etc. When omitted, all frequency tables are used
 
 ## License
 
