@@ -43,12 +43,17 @@ If you look at a kanji like 語, you can see it consists of at least three disti
 
 ## Used data
 
-- Initial unsorted list contains only kanji which are present in [KanjiVG][] project, so for each character there is a data of its' shape and stroke order
-- Characters are split into components using [CJK Decompositions Data][cjk] project, along with "fixes" to simplify final lists and avoid characters which are not present in initial list
-- Statistical data of kanji usage frequencies was gathered by processing data from various sources:
-  - [Wikimedia Downloads][wiki-dumps] - snapshot of all pages and articles of Japanese Wikipedia
-  - [Aozora Bunko][aozora] - large collection of Japanese literature
-  - [Twitter's Streaming API][twitter-stream] - public stream of tweets, filtered by language and location
+Initial unsorted list contains only kanji which are present in [KanjiVG][] project, so for each character there is a data of its' shape and stroke order.
+
+Characters are split into components using [CJK Decompositions Data][cjk] project, along with "fixes" to simplify final lists and avoid characters which are not present in initial list.
+
+Statistical data of kanji usage frequencies was collected by processing raw textual data from various sources. Those are files in `data/kanji-frequency` directory (see format description below):
+
+| File               | Size (kanji) | Contents of samples                                      | Links to sources                                                | Date      | Acquisition method                                                     |
+| ------------------ | -----------: | -------------------------------------------------------- | --------------------------------------------------------------- | --------- | ---------------------------------------------------------------------- |
+| **aozora.json**    |       ~51.5M | Japanese literature (e-books), fiction and non-fiction   | [Aozora Bunko][aozora]                                          | May 2015  | HTML files downloaded by a web-crawler                                 |
+| **twitter.json**   |       ~10.0M | Messages from Twitter                                    | [Twitter's Streaming API][twitter-stream]                       | June 2015 | Messages collected by a [bot][twitter-bot] using [API][twitter-stream] |
+| **wikipedia.json** |      ~784.5M | Japanese Wikipedia, articles and pages, w/o edit history | [Wikimedia Downloads][wiki-dumps], [`jawiki` bot dumps][jawiki] | May 2015  | Snapshot in XML format downloaded manually                             |
 
 ## Which kanji are in the list
 
@@ -120,12 +125,6 @@ Kanji usage frequency data in [JSON][] format. Each file contain an array of arr
 1. (string) Kanji itself. `"all"` is a special case in the first row.
 2. (integer) How many times it was found in the analyzed data set. For `"all"` it is a total number of kanji, including repetitions.
 3. (float) Fraction of total amount of data this character represents. For `"all"` it is `1` (i.e. 100%).
-
-| File             | Size (kanji) | Contents of samples                                      | Links to sources                                                | Date      | Acquisition method                                                     |
-| ---------------- | -----------: | -------------------------------------------------------- | --------------------------------------------------------------- | --------- | ---------------------------------------------------------------------- |
-| `aozora.json`    |       ~51.5M | Japanese literature (e-books), fiction and non-fiction   | [Aozora Bunko][aozora]                                          | May 2015  | HTML files downloaded by a web-crawler                                 |
-| `twitter.json`   |       ~10.0M | Messages from Twitter                                    | [Twitter's Streaming API][twitter-stream]                       | June 2015 | Messages collected by a [bot][twitter-bot] using [API][twitter-stream] |
-| `wikipedia.json` |      ~784.5M | Japanese Wikipedia, articles and pages, w/o edit history | [Wikimedia Downloads][wiki-dumps], [`jawiki` bot dumps][jawiki] | May 2015  | Snapshot in XML format downloaded manually                             |
 
 ## Usage
 
