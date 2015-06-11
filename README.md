@@ -121,11 +121,11 @@ Kanji usage frequency data in [JSON][] format. Each file contain an array of arr
 2. (integer) How many times it was found in the analyzed data set. For `"all"` it is a total number of kanji, including repetitions.
 3. (float) Fraction of total amount of data this character represents. For `"all"` it is `1` (i.e. 100%).
 
-Currently present data:
-
-- `aozora.json` - data from [Aozora Bunko][aozora], about 12900 files containing various works of Japanese literature (May 2015)
-- `twitter.json` - data from [Twitter's Streaming API][twitter-stream], collected in about one week (June 2015) using a [bot][twitter-bot]
-- `wikipedia.json` - data from [Wikimedia Downloads][wiki-dumps], full snapshot of Japanese Wikipedia (May 2015)
+| File             | Size (kanji) | Contents of samples                                      | Links to sources                                                | Date      | Acquisition method                                                     |
+| ---------------- | -----------: | -------------------------------------------------------- | --------------------------------------------------------------- | --------- | ---------------------------------------------------------------------- |
+| `aozora.json`    |       ~51.5M | Japanese literature (e-books), fiction and non-fiction   | [Aozora Bunko][aozora]                                          | May 2015  | HTML files downloaded by a web-crawler                                 |
+| `twitter.json`   |       ~10.0M | Messages from Twitter                                    | [Twitter's Streaming API][twitter-stream]                       | June 2015 | Messages collected by a [bot][twitter-bot] using [API][twitter-stream] |
+| `wikipedia.json` |      ~784.5M | Japanese Wikipedia, articles and pages, w/o edit history | [Wikimedia Downloads][wiki-dumps], [`jawiki` bot dumps][jawiki] | May 2015  | Snapshot in XML format downloaded manually                             |
 
 ## Usage
 
@@ -163,6 +163,7 @@ This is a multi-license project. Choose any license from this list:
 [logogram]: https://en.wikipedia.org/wiki/Logogram
 [kahn]: http://dl.acm.org/citation.cfm?doid=368996.369025
 [wiki-dumps]: https://dumps.wikimedia.org/
+[jawiki]: https://dumps.wikimedia.org/jawiki/
 [aozora]: http://www.aozora.gr.jp/
 [twitter-stream]: https://dev.twitter.com/streaming/overview
 [twitter-bot]: https://github.com/scriptin/twitter-kanji-frequency
