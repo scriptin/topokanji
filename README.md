@@ -1,6 +1,6 @@
 # TopoKanji
 
-> **15 seconds explanation**: for people learning Japanese as a second language, learning kanji in "visual decomposition" order (e.g. `一 → 二 → 三`, `言 → 五 → 口 → 語`, etc.) is better than in the order taught by [JLPT][] levels or in Japanese schools. This project provides such lists of kanji.
+> **15 seconds explanation**: for people learning Japanese as a second language, learning kanji in "visual decomposition" order (e.g. `一 → 二 → 三`, `丨 → 凵 → 山 → 出`, `言 → 五 → 口 → 語`, etc.) is better than in the order taught by [JLPT][] levels or in Japanese schools. This project provides such lists of kanji.
 
 The goal of TopoKanji project is to provide people who want to learn Japanese [kanji][] with a properly ordered list of kanji which makes the learning process as fast, simple, and effective as possible.
 
@@ -14,16 +14,17 @@ Sample (first 100 kanji from [lists/aozora.txt](lists/aozora.txt)):
     行寸寺時上刀分厶禾私
     中匚事丁可亻何自乂又
     皮彼亠方三生彐門間扌
-    手言女本乙气気年者月
-    刂前勹勿冫豕冖宀家今
-    卜下白勺的云牛物立小
-    文矢知入乍作聿書学合
+    手言女本乙气気干年者
+    月刂前勹勿冫豕冖宀家
+    今卜下白勺的云牛物立
+    小文矢知入乍作聿書学
 
 Final lists can be found in [`lists` directory](lists). Lists are only differ in order of kanji. Each file contains kanji, grouped by 10 per line, starting from simplest.
 
 You can use them to build an [Anki][] deck or just as a guidance. There are few options:
 
 - `aozora.txt` - if you're learning Japanese language primarily to be able to read Japanese novels
+- `news.txt` - if you want to read news in Japanese
 - `twitter.txt` - if you want to chat with your friends from Japan
 - `wikipedia.txt` - if your goal is to be able to read documents in Japanese
 - `all.txt` - combined "average" version of all previous. This one is experimental, I don't recommend using it
