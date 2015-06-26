@@ -4,12 +4,14 @@ var
   _ = require('lodash'),
   fs = require('fs'),
   argv = require('minimist')(process.argv.slice(2)),
+  table = require('text-table'),
   cjk = require('./lib/cjk'),
   deps = require('./lib/deps'),
   kanji = require('./lib/kanji'),
   kanjiFreq = require('./lib/kanji-freq'),
   dag = require('./lib/dag'),
-  format = require('./lib/format');
+  format = require('./lib/format'),
+  coverage = require('./lib/coverage');
 
 var // directories
   FINAL_LISTS_DIR = './lists/',
@@ -27,7 +29,8 @@ var ARGS = {
   perLine: 'per-line',
   freqTable: 'freq-table',
   save: 'save',
-  suggest: 'suggest'
+  suggestAdd: 'suggest-add',
+  suggestRemove: 'suggest-remove'
 };
 
 console.log('Reading kanji lists...');
@@ -65,40 +68,9 @@ fs.readdirSync(FREQ_TABLES_DIR).forEach(function (fileName) {
 });
 
 console.log('Merging kanji usage frequency data...');
-var freqTableAll = kanjiFreq.mergeFreqTables(freqTables);
+var freqTableAll = kanjiFreq.mergeFreqTables(freqTables, true);
 freqTables.push(freqTableAll);
 freqDataSets.all = kanjiFreq.buildFreqData(freqTableAll);
-
-function suggestAdd(candidatesCount, freqTableName, freqData, kanjiData) {
-  return _.chain(freqData.freqTable)
-    .tail()
-    .filter(function (row) {
-      return !_.contains(kanjiData.list, row[0]);
-    })
-    .take(candidatesCount)
-    .map(function (row) {
-      return [row[0], (row[2] * 100).toFixed(8) + ' %'];
-    })
-    .value();
-}
-
-function suggestRemove(candidatesCount, freqTableName, freqData, kanjiData) {
-  return _.chain(kanjiData.list)
-    .filter(function (char) {
-      return !_.contains(kanjiData.radicals, char);
-    })
-    .map(function (char) {
-      return [char, freqData.frequency[char] || 0];
-    })
-    .sortBy(function (row) {
-      return row[1];
-    })
-    .take(candidatesCount)
-    .map(function (row) {
-      return [row[0], (row[1] > 0) ? row[1].toFixed(8) + ' %' : 'missing'];
-    })
-    .value();
-}
 
 function selectLists() {
   if (_.isUndefined(argv[ARGS.freqTable])) {
@@ -107,6 +79,25 @@ function selectLists() {
     return [ argv[ARGS.freqTable] ];
   }
   throw new Error('Ingavlid value for argument --' + ARGS.freqTable + ': ' + argv[ARGS.freqTable]);
+}
+
+function getCandidates(coverageData, kanjiData, candidatesCount, removing) {
+  return _.chain(coverageData)
+    .filter(function (row) {
+      var char = row[0];
+      if (char === 'all') {
+        return false;
+      }
+      var inList = _.contains(kanjiData.list, char);
+      var isRadical = _.contains(kanjiData.radicals, char);
+      if (removing) {
+        return inList && !isRadical;
+      } else {
+        return !inList;
+      }
+    })
+    .take(candidatesCount)
+    .value();
 }
 
 var unknownArgs = _.without(Object.keys(argv), '_').filter(function (arg) {
@@ -125,19 +116,24 @@ if (argv[ARGS.save]) { // overriding final lists
     fs.writeFileSync(listFileName, format.splitInLines(finalList, 10));
   });
 
-} else if (argv[ARGS.suggest]) { // checking (un)common characters
+} else if (argv[ARGS.suggestAdd] || argv[ARGS.suggestRemove]) { // suggesting kanji to add/remove to/from initial list
 
-  if (!_.isNumber(argv[ARGS.suggest]) || argv[ARGS.suggest] < 0 || (argv[ARGS.suggest] % 1 !== 0)) {
-    throw new Error('Argument --' + ARGS.suggest + ' must be positive integer');
+  var candidatesCount = _.get(argv, ARGS.suggestAdd, null) || _.get(argv, ARGS.suggestRemove, null);
+  if (!_.isNumber(candidatesCount) || candidatesCount < 0 || (candidatesCount % 1 !== 0)) {
+    throw new Error('Value of --' + ARGS.suggestAdd + '/--' + ARGS.suggestRemove +
+                    ' must be positive integer, ' + candidatesCount + ' given');
   }
-  var candidatesCount = argv[ARGS.suggest];
-  selectLists().forEach(function (freqTableName) {
-    var freqData = freqDataSets[freqTableName];
-    console.log(candidatesCount + ' candidates to be added into kanji list according to "' + freqTableName + '":');
-    console.log(suggestAdd(candidatesCount, freqTableName, freqData, kanjiData));
-    console.log(candidatesCount + ' candidates to be removed from kanji list according to "' + freqTableName + '":');
-    console.log(suggestRemove(candidatesCount, freqTableName, freqData, kanjiData));
+  var listNames = _.without(selectLists(), 'all');
+  var tables = listNames.map(function (freqTableName) {
+    return freqDataSets[freqTableName].freqTable;
   });
+  var removing = !!argv[ARGS.suggestRemove]
+  var coverageData = coverage.sort(tables, removing); // when removing, sort in ASC order
+  var candidates = getCandidates(coverageData, kanjiData, candidatesCount, removing);
+  var headRow = ['\u3000'].concat(listNames).concat(['total']);
+  console.log('Candidates to ' + (removing ? 'remove' : 'add') +
+              ', ordered by total coverage, ' + (removing ? 'ASC' : 'DESC') + ':');
+  console.log(table([headRow].concat(candidates)));
 
 } else {
 
