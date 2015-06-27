@@ -141,14 +141,14 @@ You must have Node.js and Git installed
 
 1. `git clone https://github.com/THIS/REPO.git`
 2. `npm install`
-3. `node build.js`
+3. `node build.js` + commands and arguments described below
 
 ### Command-line commands and arguments
 
 - `show` - only display sorted list without writing into files
   - (optional) `--per-line=NUM` - explicitly tell how many characters per line to display. `50` by default. Applicable only to (no  arguments)
-  - (optional) `--freq-table=TABLE_NAME` - use only one freq. table. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" list), `aozora`, etc. When omitted, all frequency tables are used
-- `suggest-add` - suggest kanji to add in a list, based on coverage withing kanji usage frequency tables
+  - (optional) `--freq-table=TABLE_NAME` - use only one frequency table. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" list), `aozora`, etc. When omitted, all frequency tables are used
+- `suggest-add` - suggest kanji to add in a list, based on coverage within kanji usage frequency tables
   - (required) `--num=NUM` - how many
   - (optional) `--mean-type=MEAN_TYPE` - same as previous, sort by given mean type: `arithmetic` (most "extreme"), `geometric`, `harmonic` (default, most "conservative"). See [Pythagorean means][mean-type] for details
 - `suggest-remove` - suggest kanji to remove from a list, reverse of `suggest-add`
