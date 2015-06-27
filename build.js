@@ -29,6 +29,7 @@ var CMDS = {
   show: 'show',
   suggestAdd: 'suggest-add',
   suggestRemove: 'suggest-remove',
+  coverage: 'coverage',
   save: 'save'
 };
 
@@ -171,6 +172,17 @@ if (commandIs(CMDS.show)) { // displaying list(s)
               ', ordered by ' + meanType + ' mean of coverage, ' +
               (removing ? 'ASC' : 'DESC') + ':');
   console.log(table([headRow].concat(candidates)));
+
+} else if (commandIs(CMDS.coverage)) {
+
+  var listNames = selectLists(true);
+  var tables = listNames.map(function (freqTableName) {
+    return freqDataSets[freqTableName].freqTable;
+  });
+  var coverage = coverage.report(kanjiData.list, listNames, tables).map(function (row) {
+    return [row[0], (row[1] * 100).toFixed(4) + '%'];
+  });
+  console.log(table([['table', 'coverage']].concat(coverage)));
 
 } else {
 
