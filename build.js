@@ -25,12 +25,18 @@ var // files
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt';
 
+var CMDS = {
+  show: 'show',
+  suggestAdd: 'suggest-add',
+  suggestRemove: 'suggest-remove',
+  save: 'save'
+};
+
 var ARGS = {
+  num: 'num',
   perLine: 'per-line',
   freqTable: 'freq-table',
-  save: 'save',
-  suggestAdd: 'suggest-add',
-  suggestRemove: 'suggest-remove'
+  meanType: 'mean-type'
 };
 
 console.log('Reading kanji lists...');
@@ -72,13 +78,13 @@ var freqTableAll = kanjiFreq.mergeFreqTables(freqTables, true);
 freqTables.push(freqTableAll);
 freqDataSets.all = kanjiFreq.buildFreqData(freqTableAll);
 
-function selectLists() {
-  if (_.isUndefined(argv[ARGS.freqTable])) {
+function selectLists(forceAll) {
+  if (forceAll || _.isUndefined(argv[ARGS.freqTable])) {
     return Object.keys(freqDataSets);
   } else if (_.isString(argv[ARGS.freqTable])) {
     return [ argv[ARGS.freqTable] ];
   }
-  throw new Error('Ingavlid value for argument --' + ARGS.freqTable + ': ' + argv[ARGS.freqTable]);
+  throw new Error('Invalid value for argument --' + ARGS.freqTable + ': ' + argv[ARGS.freqTable]);
 }
 
 function getCandidates(coverageData, kanjiData, candidatesCount, removing) {
@@ -100,51 +106,75 @@ function getCandidates(coverageData, kanjiData, candidatesCount, removing) {
     .value();
 }
 
-var unknownArgs = _.without(Object.keys(argv), '_').filter(function (arg) {
-  return !_.contains(ARGS, arg);
-});
-if (unknownArgs.length > 0) {
-  throw new Error('Unknown arguments: ' + JSON.stringify(unknownArgs));
+if (argv._.length > 1) {
+  throw new Error('Only one command can be specified, ' +
+                  argv._.length + ' given: ' + argv._.join(', '));
 }
 
-if (argv[ARGS.save]) { // overriding final lists
+var unknownCmds = _.difference(argv._, _.values(CMDS));
+if (unknownCmds.length > 0) {
+  throw new Error('Unknown command: ' + unknownCmds.join(', '));
+}
 
-  selectLists().forEach(function (freqTableName) {
-    var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
-    console.log('Writing list: ' + listFileName + ' ...');
-    var finalList = buildList(freqDataSets[freqTableName]);
-    fs.writeFileSync(listFileName, format.splitInLines(finalList, 10));
-  });
+var unknownArgs = _.chain(Object.keys(argv)).without('_').difference(_.values(ARGS)).value();
+if (unknownArgs.length > 0) {
+  throw new Error('Unknown argument(s): ' + unknownArgs.join(', '));
+}
 
-} else if (argv[ARGS.suggestAdd] || argv[ARGS.suggestRemove]) { // suggesting kanji to add/remove to/from initial list
+function commandIs(cmd) {
+  return argv._[0] === cmd;
+}
 
-  var candidatesCount = _.get(argv, ARGS.suggestAdd, null) || _.get(argv, ARGS.suggestRemove, null);
-  if (!_.isNumber(candidatesCount) || candidatesCount < 0 || (candidatesCount % 1 !== 0)) {
-    throw new Error('Value of --' + ARGS.suggestAdd + '/--' + ARGS.suggestRemove +
-                    ' must be positive integer, ' + candidatesCount + ' given');
-  }
-  var listNames = _.without(selectLists(), 'all');
-  var tables = listNames.map(function (freqTableName) {
-    return freqDataSets[freqTableName].freqTable;
-  });
-  var removing = !!argv[ARGS.suggestRemove]
-  var coverageData = coverage.sort(tables, removing); // when removing, sort in ASC order
-  var candidates = getCandidates(coverageData, kanjiData, candidatesCount, removing);
-  var headRow = ['\u3000'].concat(listNames).concat(['total']);
-  console.log('Candidates to ' + (removing ? 'remove' : 'add') +
-              ', ordered by total coverage, ' + (removing ? 'ASC' : 'DESC') + ':');
-  console.log(table([headRow].concat(candidates)));
-
-} else {
+if (commandIs(CMDS.show)) { // displaying list(s)
 
   var charsPerLine = argv[ARGS.perLine] || 50;
-  selectLists().forEach(function (freqTableName) {
+  selectLists(false).forEach(function (freqTableName) {
     var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
     console.log('Building list: ' + freqTableName + ' ...');
     var freqData = freqDataSets[freqTableName];
     var finalList = buildList(freqData);
     console.log(format.splitInLines(finalList, charsPerLine));
   });
+
+} else if (commandIs(CMDS.save)) { // overriding final lists
+
+  selectLists(true).forEach(function (freqTableName) {
+    var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
+    console.log('Writing list: ' + listFileName + ' ...');
+    var finalList = buildList(freqDataSets[freqTableName]);
+    fs.writeFileSync(listFileName, format.splitInLines(finalList, 10));
+  });
+
+} else if (commandIs(CMDS.suggestAdd) || commandIs(CMDS.suggestRemove)) { // suggest kanji to add/remove
+
+  var candidatesCount = argv[ARGS.num];
+  if (_.isUndefined(candidatesCount) ||
+      !_.isNumber(candidatesCount) ||
+      candidatesCount < 0 ||
+      (candidatesCount % 1 !== 0)) {
+    throw new Error('Value of --' + ARGS.num + ' must be a positive integer, given ' + candidatesCount);
+  }
+
+  var listNames = _.without(selectLists(true), 'all'); // 'all' list is generated from others
+  var tables = listNames.map(function (freqTableName) {
+    return freqDataSets[freqTableName].freqTable;
+  });
+
+  var meanType = _.get(argv, ARGS.meanType, 'harmonic');
+  var removing = commandIs(CMDS.suggestRemove);
+
+  var coverageData = coverage.sort(tables, meanType, removing); // when removing, sort in ASC order
+  var candidates = getCandidates(coverageData, kanjiData, candidatesCount, removing);
+
+  var headRow = ['\u3000'].concat(listNames).concat([meanType + ' mean']);
+  console.log('Candidates to ' + (removing ? 'remove' : 'add') +
+              ', ordered by ' + meanType + ' mean of coverage, ' +
+              (removing ? 'ASC' : 'DESC') + ':');
+  console.log(table([headRow].concat(candidates)));
+
+} else {
+
+  throw new Error('No command provided, use one of these: ' + _.values(CMDS).join(', '));
 
 }
 

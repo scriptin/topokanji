@@ -143,13 +143,18 @@ You must have Node.js and Git installed
 2. `npm install`
 3. `node build.js`
 
-### Command-line arguments
+### Command-line commands and arguments
 
-- only one of following:
-  - `--save` - write to files in `lists` directory
-  - `--suggest-add=NUM` or `--suggest-remove=NUM` - suggest addition/deletion of `NUM` most/least frequently used characters into/from list (`data/kanji.txt`) according to kanji usage frequency tables
-  - no argument or (optional) `--per-line=NUM` (default 50) - only display sorted list without writing into file. Display `NUM` characters per one line of output
-- (optional) `--freq-table=TABLE_NAME` - perform operations mentioned above only for one frequency table name. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" list), `aozora`, etc. When omitted, all frequency tables are used
+- `show` - only display sorted list without writing into files
+  - (optional) `--per-line=NUM` - explicitly tell how many characters per line to display. `50` by default. Applicable only to (no  arguments)
+  - (optional) `--freq-table=TABLE_NAME` - use only one freq. table. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" list), `aozora`, etc. When omitted, all frequency tables are used
+- `suggest-add` - suggest kanji to add in a list, based on coverage withing kanji usage frequency tables
+  - (required) `--num=NUM` - how many
+  - (optional) `--mean-type=MEAN_TYPE` - same as previous, sort by given mean type: `arithmetic` (most "extreme"), `geometric`, `harmonic` (default, most "conservative"). See [Pythagorean means][mean-type] for details
+- `suggest-remove` - suggest kanji to remove from a list, reverse of `suggest-add`
+  - (required) `--num=NUM` - see above
+  - (optional) `--mean-type=MEAN_TYPE` - see above
+- `save` - update files with final lists
 
 ## License
 
@@ -184,3 +189,4 @@ This is a multi-license project. Choose any license from this list:
 [json]: http://json.org/
 [bom]: https://en.wikipedia.org/wiki/Byte_order_mark
 [eol]: https://en.wikipedia.org/wiki/Newline
+[mean-type]: https://en.wikipedia.org/wiki/Pythagorean_means
