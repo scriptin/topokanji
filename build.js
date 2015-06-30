@@ -10,11 +10,13 @@ var
   kanji = require('./lib/kanji'),
   kanjiFreq = require('./lib/kanji-freq'),
   dag = require('./lib/dag'),
+  files = require('./lib/files'),
   format = require('./lib/format'),
   coverage = require('./lib/coverage');
 
 var // directories
   FINAL_LISTS_DIR = './lists/',
+  KANJI_DEPS_DIR = './dependencies/',
   DATA_DIR = './data/',
   FREQ_TABLES_DIR = DATA_DIR + 'kanji-frequency/';
 
@@ -23,7 +25,9 @@ var // files
   KANJIVG_LIST = DATA_DIR + 'kanjivg.txt',
   RADICALS_LIST = DATA_DIR + 'radicals.txt',
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
-  CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt';
+  CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt',
+  DEPS_NORMAL = KANJI_DEPS_DIR + '1-to-1.txt',
+  DEPS_CONCAT = KANJI_DEPS_DIR + '1-to-N.txt';
 
 var CMDS = {
   show: 'show',
@@ -138,6 +142,21 @@ if (commandIs(CMDS.show)) { // displaying list(s)
   });
 
 } else if (commandIs(CMDS.save)) { // overriding final lists
+
+  console.log('Writing 1-to-1 dependencies into ' + DEPS_NORMAL + ' ...');
+  fs.writeFileSync(DEPS_NORMAL, dependencies.map(function (dep) {
+    return dep[0] + ' ' + dep[1];
+  }).join('\n'), files.WRITE_UTF8);
+
+  console.log('Writing 1-to-N dependecies into ' + DEPS_CONCAT + ' ...');
+  var depsConcat = {};
+  dependencies.forEach(function (dep) {
+    depsConcat[dep[0]] = (depsConcat[dep[0]] || []);
+    depsConcat[dep[0]].push(dep[1]);
+  });
+  fs.writeFileSync(DEPS_CONCAT, _.pairs(depsConcat).map(function (dep) {
+    return dep[0] + ' ' + dep[1].join('');
+  }).join('\n'), files.WRITE_UTF8);
 
   selectLists(true).forEach(function (freqTableName) {
     var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
