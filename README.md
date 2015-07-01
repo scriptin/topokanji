@@ -8,16 +8,16 @@ Motivation for this project initially came from reading this article: [The 5 Big
 
 Sample (first 100 kanji from [lists/aozora.txt](lists/aozora.txt)):
 
-    人一二丨冂囗口目丿儿
-    見凵山出日十八木未丶
-    来大亅了子心土田思彳
-    行寸寺時上刀分厶禾私
-    中匚事丁可亻何自乂又
-    皮彼亠方三生彐門間扌
-    手言女本乙气気干年者
-    月刂前勹勿冫豕冖宀家
-    今卜下白勺的云牛物立
-    小文矢知入乍作聿書学
+    人一丨口日目儿見凵山
+    出十八木未丶来大亅了
+    子心土冂田思二丁彳行
+    寸寺時卜上丿刀分厶禾
+    私中彐尹事可亻何自乂
+    又皮彼亠方生月門間扌
+    手言女本乙气気干年三
+    耂者刂前勹勿豕冖宀家
+    今下白勺的云牛物立小
+    文矢知入乍作聿書学合
 
 Final lists can be found in [`lists` directory](lists). Lists are only differ in order of kanji. Each file contains kanji, grouped by 10 per line, starting from simplest.
 
@@ -89,6 +89,8 @@ Note that if kanji or radicals is not present in KanjiVG project, it must not ap
 
 Files in `lists` directory are final lists. They contain kanji grouped by 10 per line.
 
+Files in `dependencies` directory are "flat" equivalents of CJK-decompositions (see below). `1-to-1.txt` has a format compatible with [`tsort`](https://en.wikipedia.org/wiki/Tsort) command line utility. `1-to-N.txt` is similar, but each line lists all "dependecies" at once. "Dependency" here means "a component of the visual decomposition" for kanji.
+
 Files in `data` directory:
 
 - `kanji.txt` - list of kanji characters included in final ordered lists
@@ -123,9 +125,15 @@ Data file from [CJK Decompositions Data][cjk] project, see [description of its' 
 
 ### cjk-decomp-override.txt
 
-Same format as `cjk-decomp-{VERSION}.txt`, except the only purpose of each pictorial configuration record here is to override the one from `cjk-decomp-{VERSION}.txt`. The type of decomposition is always `fix`, which just means "fix a record for the same character from original file".
+Same format as `cjk-decomp-{VERSION}.txt`, except:
+
+- comments starting with `#` allowed
+- purpose of each record in this file is to override the one from `cjk-decomp-{VERSION}.txt`
+- type of decomposition is always `fix`, which just means "fix a record for the same character from original file"
 
 Special character `0` is used to distinguish invalid decompositions (which lead to characters with no graphical representation) from those which just can't be decomposed further into something meaningful. For example, `一:fix(0)` means that this kanji can't be further decomposed, since it's just a single stroke.
+
+NOTE: Strictly speaking, records in this file are not always "visual decompositions" (but most of them are). Instead, it's just an attempt to provide meaningful recommendations of kanji learning order.
 
 ### kanji-frequency/*.json
 
