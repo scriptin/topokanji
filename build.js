@@ -26,8 +26,8 @@ var // files
   RADICALS_LIST = DATA_DIR + 'radicals.txt',
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt',
-  DEPS_NORMAL = KANJI_DEPS_DIR + '1-to-1.txt',
-  DEPS_CONCAT = KANJI_DEPS_DIR + '1-to-N.txt';
+  DEPS_PAIRS = KANJI_DEPS_DIR + '1-to-1.txt',
+  DEPS_MAP = KANJI_DEPS_DIR + '1-to-N.txt';
 
 var CMDS = {
   show: 'show',
@@ -51,8 +51,8 @@ console.log(kanjiData.list.length + ' kanji + ' + kanjiData.radicals.length + ' 
 console.log('Reading CJK decompositions...');
 var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
 
-console.log('Building list of dependencies...');
-var dependencies = deps.buildDependencies(kanjiData.list, decompositions);
+console.log('Building list of dependency pairs...');
+var dependencies = deps.buildDependencyPairs(kanjiData.list, decompositions);
 
 function buildWeightFinction(freqData) {
   return function (char) {
@@ -143,18 +143,24 @@ if (commandIs(CMDS.show)) { // displaying list(s)
 
 } else if (commandIs(CMDS.save)) { // overriding final lists
 
-  console.log('Writing 1-to-1 dependencies into ' + DEPS_NORMAL + ' ...');
-  fs.writeFileSync(DEPS_NORMAL, dependencies.map(function (dep) {
-    return dep[0] + ' ' + dep[1];
+  var depsMap = deps.buildDependencyMap(dependencies);
+  var depsPairs = _.chain(depsMap)
+    .pairs()
+    .map(function (dep) {
+      return dep[1].map(function (d) {
+        return [dep[0], d];
+      });
+    })
+    .flatten()
+    .value();
+
+  console.log('Writing 1-to-1 dependencies into ' + DEPS_PAIRS + ' ...');
+  fs.writeFileSync(DEPS_PAIRS, depsPairs.map(function (dep) {
+    return dep.join(' ');
   }).join('\n'), files.WRITE_UTF8);
 
-  console.log('Writing 1-to-N dependecies into ' + DEPS_CONCAT + ' ...');
-  var depsConcat = {};
-  dependencies.forEach(function (dep) {
-    depsConcat[dep[0]] = (depsConcat[dep[0]] || []);
-    depsConcat[dep[0]].push(dep[1]);
-  });
-  fs.writeFileSync(DEPS_CONCAT, _.pairs(depsConcat).map(function (dep) {
+  console.log('Writing 1-to-N dependencies into ' + DEPS_MAP + ' ...');
+  fs.writeFileSync(DEPS_MAP, _.pairs(depsMap).map(function (dep) {
     return dep[0] + ' ' + dep[1].join('');
   }).join('\n'), files.WRITE_UTF8);
 
