@@ -1,12 +1,20 @@
 # TopoKanji
 
-> **15 seconds explanation**: for people learning Japanese as a second language, learning kanji in "visual decomposition" order (e.g. `一 → 二 → 三`, `丨 → 凵 → 山 → 出`, `言 → 五 → 口 → 語`, etc.) is better than in the order taught by [JLPT][] levels or in Japanese schools. This project provides such lists of kanji.
-
-The goal of TopoKanji project is to provide people who want to learn Japanese [kanji][] with a properly ordered list of kanji which makes the learning process as fast, simple, and effective as possible.
+> **30 seconds explanation for people who want to learn kanji:**
+>
+> It is best to learn kanji starting from simple characters and then learning complex ones as compositions of "parts", which are called "radicals" or "components". For example:
+>
+> - 一 → 二 → 三
+> - 丨 → 凵 → 山 → 出
+> - 言 → 五 → 口 → 語
+>
+> It is also smart to learn more common kanji first.
+>
+> This project is based on those two ideas and provides properly ordered lists of kanji to make your learning process as fast, simple, and effective as possible.
 
 Motivation for this project initially came from reading this article: [The 5 Biggest Mistakes People Make When Learning Kanji][mistakes].
 
-Sample (first 100 kanji from [lists/aozora.txt](lists/aozora.txt)):
+First 100 kanji from [lists/aozora.txt](lists/aozora.txt):
 
     人一丨口日目儿見凵山
     出十八木未丶来大亅了
@@ -19,15 +27,15 @@ Sample (first 100 kanji from [lists/aozora.txt](lists/aozora.txt)):
     今下白勺的云牛物立小
     文矢知入乍作聿書学合
 
-Final lists can be found in [`lists` directory](lists). Lists are only differ in order of kanji. Each file contains kanji, grouped by 10 per line, starting from simplest.
+These lists can be found in [`lists` directory](lists). They only differ in order of kanji. Each file contains kanji, grouped by 10 per line, starting from simplest. There are few options (see [Used data](#used-data) for details):
 
-You can use them to build an [Anki][] deck or just as a guidance. There are few options:
-
-- `aozora.txt` - if you're learning Japanese language primarily to be able to read Japanese novels
-- `news.txt` - if you want to read news in Japanese
-- `twitter.txt` - if you want to chat with your friends from Japan
-- `wikipedia.txt` - if your goal is to be able to read documents in Japanese
+- `aozora.txt` - ordered by kanji frequency in Japanese fiction and non-fiction books
+- `news.txt` - ordered by kanji frequency in online news
+- `twitter.txt` - ordered by kanji frequency in Twitter messages
+- `wikipedia.txt` - ordered by kanji frequency in Wikipedia articles
 - `all.txt` - combined "average" version of all previous. This one is experimental, I don't recommend using it
+
+You can use these lists to build an [Anki][] deck or just as a guidance.
 
 ## What is a properly ordered list of kanji?
 
@@ -89,7 +97,7 @@ Note that if kanji or radicals is not present in KanjiVG project, it must not ap
 
 Files in `lists` directory are final lists. They contain kanji grouped by 10 per line.
 
-Files in `dependencies` directory are "flat" equivalents of CJK-decompositions (see below). `1-to-1.txt` has a format compatible with [`tsort`](https://en.wikipedia.org/wiki/Tsort) command line utility. `1-to-N.txt` is similar, but each line lists all "dependecies" at once. "Dependency" here means "a component of the visual decomposition" for kanji.
+Files in `dependencies` directory are "flat" equivalents of CJK-decompositions (see below). `1-to-1.txt` has a format compatible with [tsort][] command line utility. `1-to-N.txt` is similar, but each line lists all "dependecies" at once. "Dependency" here roughly means "a component of the visual decomposition" for kanji.
 
 Files in `data` directory:
 
@@ -176,13 +184,11 @@ This is a multi-license project. Choose any license from this list:
 - [MIT](http://opensource.org/licenses/MIT)
 
 [mistakes]: http://www.tofugu.com/2010/03/25/the-5-biggest-mistakes-people-make-when-learning-kanji/
-[jlpt]: http://www.jlpt.jp/e/
 [anki]: http://ankisrs.net/
-[kanji]: https://en.wikipedia.org/wiki/Kanji
 [graph]: https://en.wikipedia.org/wiki/Graph_(mathematics)
 [dag]: https://en.wikipedia.org/wiki/Directed_acyclic_graph
 [topsort]: https://en.wikipedia.org/wiki/Topological_sorting
-[logogram]: https://en.wikipedia.org/wiki/Logogram
+[tsort]: https://en.wikipedia.org/wiki/Tsort
 [kahn]: http://dl.acm.org/citation.cfm?doid=368996.369025
 [wiki-dumps]: https://dumps.wikimedia.org/
 [jawiki]: https://dumps.wikimedia.org/jawiki/
