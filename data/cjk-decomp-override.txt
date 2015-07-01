@@ -1,3 +1,5 @@
+# Terminal characters: no decomposition is needed/possible
+
 ㇆:fix(0)
 丶:fix(0)
 一:fix(0)
@@ -11,6 +13,8 @@
 八:fix(0)
 儿:fix(0)
 廴:fix(0)
+
+# Unprintable characters
 
 ㇐:fix(一)
 ㇑:fix(丨)
@@ -35,6 +39,8 @@
 𢀳:fix(艮)
 𧘇:fix(衣)
 𪨃:fix(爪,寸)
+
+# Numerical codes from CJK
 
 10001:fix(丿,丨)
 37036:fix(冫)
@@ -66,9 +72,13 @@
 59756:fix(丨,二)
 99721:fix(彐)
 
+# Obscure identical kanji with different codes
+
 菐:fix(業)
 ⻭:fix(歯)
 ⺙:fix(攵)
+
+# Other replacements
 
 口:fix(丨,一)
 囗:fix(冂,一)
