@@ -189,10 +189,10 @@ if (commandIs(CMDS.show)) { // displaying list(s)
   var meanType = _.get(argv, ARGS.meanType, 'harmonic');
   var removing = commandIs(CMDS.suggestRemove);
 
-  var coverageData = coverage.sort(tables, meanType, removing); // when removing, sort in ASC order
+  var coverageData = coverage.sort(tables, dependencies, meanType, removing); // when removing, sort in ASC order
   var candidates = getCandidates(coverageData, kanjiData, candidatesCount, removing);
 
-  var headRow = ['\u3000'].concat(listNames).concat([meanType + ' mean']);
+  var headRow = _.flatten(['\u3000', listNames, meanType + ' mean', 'part of']);
   console.log('Candidates to ' + (removing ? 'remove' : 'add') +
               ', ordered by ' + meanType + ' mean of coverage, ' +
               (removing ? 'ASC' : 'DESC') + ':');
