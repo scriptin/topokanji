@@ -21,9 +21,8 @@ var // directories
   FREQ_TABLES_DIR = DATA_DIR + 'kanji-frequency/';
 
 var // files
-  KANJI_LIST = DATA_DIR + 'kanji.txt',
+  KANJI_TABLE = DATA_DIR + 'kanji.json',
   KANJIVG_LIST = DATA_DIR + 'kanjivg.txt',
-  RADICALS_LIST = DATA_DIR + 'radicals.txt',
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt',
   DEPS_PAIRS = KANJI_DEPS_DIR + '1-to-1.txt',
@@ -31,15 +30,16 @@ var // files
 
 command.init();
 
-console.log('Reading kanji lists...');
-var kanjiData = kanji.readKanjiData(KANJI_LIST, KANJIVG_LIST, RADICALS_LIST);
-console.log(kanjiData.list.length + ' kanji + ' + kanjiData.radicals.length + ' radicals');
+console.log('Reading kanji table...');
+var kanjiData = kanji.readKanjiData(KANJI_TABLE, KANJIVG_LIST);
+var kanjiList = _.keys(kanjiData);
+console.log(kanjiList.length + ' characters');
 
 console.log('Reading CJK decompositions...');
 var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
 
 console.log('Building list of dependency pairs...');
-var dependencies = deps.buildDependencyPairs(kanjiData.list, decompositions);
+var dependencies = deps.buildDependencyPairs(kanjiList, decompositions);
 
 function buildWeightFinction(freqData) {
   return function (char) {
@@ -75,25 +75,6 @@ function selectLists(forceAll) {
     return _.keys(freqDataSets);
   }
   return [ command.getFreqTable() ];
-}
-
-function getCandidates(coverageData, kanjiData, candidatesCount, removing) {
-  return _.chain(coverageData)
-    .filter(function (row) {
-      var char = row[0];
-      if (char === 'all') {
-        return false;
-      }
-      var inList = _.contains(kanjiData.list, char);
-      var isRadical = _.contains(kanjiData.radicals, char);
-      if (removing) {
-        return inList && !isRadical;
-      } else {
-        return !inList;
-      }
-    })
-    .take(candidatesCount)
-    .value();
 }
 
 if (command.is(command.CMDS.show)) { // displaying list(s)
@@ -151,7 +132,7 @@ if (command.is(command.CMDS.show)) { // displaying list(s)
   });
 
   var coverageData = coverage.sort(tables, dependencies, meanType, removing); // when removing, sort in ASC order
-  var candidates = getCandidates(coverageData, kanjiData, candidatesCount, removing);
+  var candidates = coverage.getCandidates(coverageData, kanjiData, candidatesCount, removing);
 
   var headRow = _.flatten(['\u3000', listNames, meanType + ' mean', 'part of']);
   console.log('Candidates to ' + (removing ? 'remove' : 'add') +
@@ -165,7 +146,7 @@ if (command.is(command.CMDS.show)) { // displaying list(s)
   var tables = listNames.map(function (freqTableName) {
     return freqDataSets[freqTableName].freqTable;
   });
-  var coverage = coverage.report(kanjiData.list, listNames, tables).map(function (row) {
+  var coverage = coverage.report(kanjiList, listNames, tables).map(function (row) {
     return [row[0], (row[1] * 100).toFixed(4) + '%'];
   });
   console.log(table([['table', 'coverage']].concat(coverage)));

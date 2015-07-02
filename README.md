@@ -89,7 +89,7 @@ Generally, the goal is provide something similar to [Jōyō kanji][jouyou], but 
 Radical is considered common and simple if:
 
 - it has no more than ~10 strokes, except if it has some very unique shape not presented elsewhere
-- it is used in decompositions of at least 2-3 kanji characters from `data/kanji.txt`
+- it is used in decompositions of at least 2-3 kanji characters from `data/kanji.json`
 
 Note that if kanji or radicals is not present in KanjiVG project, it must not appear in lists even if it meets all conditions.
 
@@ -101,8 +101,7 @@ Files in `dependencies` directory are "flat" equivalents of CJK-decompositions (
 
 Files in `data` directory:
 
-- `kanji.txt` - list of kanji characters included in final ordered lists
-- `radicals.txt` - list of [radicals][kangxi] included in `kanji.txt`, but only those which are not common kanji by themselves. This file is intended to use as a list of exceptions when checking which characters are common
+- `kanji.json` - data for kanji included in final ordered lists, including [radicals][kangxi]
 - `kanjivg.txt` - list of kanji from [KanjiVG][]
 - `cjk-decomp-{VERSION}.txt` - data from [CJK Decompositions Data][cjk], without any modifications
 - `cjk-decomp-override.txt` - data to override some CJK's decompositions
@@ -110,18 +109,22 @@ Files in `data` directory:
 
 All files are encoded in UTF-8, without [byte order mark (BOM)][bom]. All files, except for `cjk-decomp-{VERSION}.txt`, have unix-style [line endings][eol], `LF`.
 
-### kanji.txt
+### kanji.json
 
-Contains initial list of kanji, including radicals.
+Contains table with data for kanji, including radicals. Columns are:
 
+1. Character itself
+2. Stroke count
+3. Frequency flag:
+   - `true` if it is a common kanji
+   - `false` if it is primarily used as a radical/component and unlikely to be seen within top 3000 in kanji usage frequency tables. In this case character is only listed because it's useful for decomposition, not as a standalone kanji
+
+Resrictions:
+
+- No duplicates
 - Each character must be listed in `kanjivg.txt`
-- Each character must be listed in one of `cjk-decomp-*.txt` files
-- Each character must appear on a line which number is equal to a number of strokes in the character
-- No extra whitespace or any other symbols, comments, etc.
-
-### radicals.txt
-
-List of [radicals][kangxi]. Must only contain characters which are also in `kanji.txt`, but must not contain radicals which are also common kanji by themselves. Organized the same way as `kanji.txt`.
+- Each character must be listed on the left hand side in exactly one line in `cjk-decomp-{VERSION}.txt`
+- Each character *may* be listed on the left hand side in exactly one line in `cjk-decomp-override.txt`
 
 ### kanjivg.txt
 
