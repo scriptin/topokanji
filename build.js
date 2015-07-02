@@ -72,7 +72,7 @@ freqDataSets.all = kanjiFreq.buildFreqData(freqTableAll);
 
 function selectLists(forceAll) {
   if (forceAll || _.isUndefined(command.getFreqTable())) {
-    return Object.keys(freqDataSets);
+    return _.keys(freqDataSets);
   }
   return [ command.getFreqTable() ];
 }
