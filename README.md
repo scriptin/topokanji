@@ -106,6 +106,7 @@ Files in `data` directory:
 - `cjk-decomp-{VERSION}.txt` - data from [CJK Decompositions Data][cjk], without any modifications
 - `cjk-decomp-override.txt` - data to override some CJK's decompositions
 - `kanji-frequency/*.json` - kanji frequency tables
+- `meanings/*.json` - kanji meanings in different languages
 
 All files are encoded in UTF-8, without [byte order mark (BOM)][bom]. All files, except for `cjk-decomp-{VERSION}.txt`, have unix-style [line endings][eol], `LF`.
 
@@ -153,6 +154,12 @@ Kanji usage frequency data in [JSON][] format. Each file contain an array of arr
 1. (string) Kanji itself. `"all"` is a special case in the first row.
 2. (integer) How many times it was found in the analyzed data set. For `"all"` it is a total number of kanji, including repetitions.
 3. (float) Fraction of total amount of data this character represents. For `"all"` it is `1` (i.e. 100%).
+
+### meanings/*.json
+
+Kanji meanings in JSON format, structure is obvious. Each file is named with 2-letter language code after a language it uses.
+
+Currently available list of meanings in English is based on my Anki decks and contains data from many sources, sometimes even from Chinese vocabularies. The goal was to provide the list of meanings which is easy for learning kanji, and not necessarily (but hopefully) the most precise, complete, or "right" in any sense.
 
 ## Usage
 
