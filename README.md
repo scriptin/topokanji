@@ -72,26 +72,16 @@ Notes:
 - **twitter.json**: Messages were collected within about 1 week from [Twitter's Streaming API][twitter-stream]. Only message text bodies were scanned, authors' names and other data ignored.
 - **wikipedia.json**: Dump included only current versions of pages and articles, without previous revisions or any other history of editing. Dump was scanned as plain text, ignoring XML and wiki markup structure.
 
-## Which kanji are in the list
+## Which kanji are (not) included?
 
-Initial list contain only common kanji and simple radicals, because it is build for people who just started learning kanji.
+Kanji list covers about 95-99% of kanji found in various Japanese texts. Generally, the goal is provide something similar to [Jōyō kanji][jouyou], but based on actual data. Radicals are also included, but only those which are parts of some kanji in the list.
 
-Kanji is considered common if:
+Kanji/radical must **NOT** appear in this list if it is:
 
-- it is among the ~2500 most frequently used characters according to at least ony frequency table from `data/kanji-frequency`
-- it is **NOT**:
-  - a part of currently popular meme, manga/anime/dorama/movie title, #hashtag, etc., and otherwise is not commonly used
-  - mostly used in names (people, places, etc.) or in some specific terms (religion, mythology, etc.)
-  - mostly used because of its' shape, e.g. a part of text emoticons/kaomoji like `( ^ω^)个`
-
-Generally, the goal is provide something similar to [Jōyō kanji][jouyou], but based on actual data.
-
-Radical is considered common and simple if:
-
-- it has no more than ~10 strokes, except if it has some very unique shape not presented elsewhere
-- it is used in decompositions of at least 2-3 kanji characters from `data/kanji.json`
-
-Note that if kanji or radicals is not present in KanjiVG project, it must not appear in lists even if it meets all conditions.
+- not included in KanjiVG character set
+- primarily used in names (people, places, etc.) or in some specific terms (religion, mythology, etc.)
+- mostly used because of its' shape, e.g. a part of text emoticons/kaomoji like `( ^ω^)个`
+- a part of currently popular meme, manga/anime/dorama/movie title, #hashtag, etc., and otherwise is not commonly used
 
 ## Files and formats
 
