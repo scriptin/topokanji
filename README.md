@@ -14,7 +14,7 @@
 
 Motivation for this project initially came from reading this article: [The 5 Biggest Mistakes People Make When Learning Kanji][mistakes].
 
-First 100 kanji from [lists/aozora.txt](lists/aozora.txt):
+First 100 kanji from [lists/aozora.txt](lists/aozora.txt) (formatted for convenience):
 
     人一丨口日目儿見凵山
     出十八木未丶来大亅了
@@ -27,15 +27,15 @@ First 100 kanji from [lists/aozora.txt](lists/aozora.txt):
     今下白勺的云牛物立小
     文矢知入乍作聿書学合
 
-These lists can be found in [`lists` directory](lists). They only differ in order of kanji. Each file contains kanji, grouped by 10 per line, starting from simplest. There are few options (see [Used data](#used-data) for details):
+These lists can be found in [`lists` directory](lists). They only differ in order of kanji. Each file contains a list of kanji, ordered as described in following sections. There are few options (see [Used data](#used-data) for details):
 
-- `aozora.txt` - ordered by kanji frequency in Japanese fiction and non-fiction books
-- `news.txt` - ordered by kanji frequency in online news
-- `twitter.txt` - ordered by kanji frequency in Twitter messages
-- `wikipedia.txt` - ordered by kanji frequency in Wikipedia articles
-- `all.txt` - combined "average" version of all previous. This one is experimental, I don't recommend using it
+- `aozora.(json|txt)` - ordered by kanji frequency in Japanese fiction and non-fiction books; I recommend this list if you're starting to learn kanji
+- `news.(json|txt)` - ordered by kanji frequency in online news
+- `twitter.(json|txt)` - ordered by kanji frequency in Twitter messages
+- `wikipedia.(json|txt)` - ordered by kanji frequency in Wikipedia articles
+- `all.(json|txt)` - combined "average" version of all previous; this one is experimental, I don't recommend using it
 
-You can use these lists to build an [Anki][] deck or just as a guidance.
+You can use these lists to build an [Anki][] deck or just as a guidance. If you're looking for "names" or meanings of kanji, you might want to check my [kanji-keys](https://github.com/scriptin/kanji-keys) project.
 
 ## What is a properly ordered list of kanji?
 
@@ -58,19 +58,19 @@ Characters are split into components using [CJK Decompositions Data][cjk] projec
 
 Statistical data of kanji usage frequencies was collected by processing raw textual data from various sources. Those are files in `data/kanji-frequency` directory (see format description below):
 
-| File               | # of kanji | Description                                               | Date      |
-| ------------------ | ---------: | --------------------------------------------------------- | --------- |
-| **aozora.json**    |     ~51.5M | Fiction and non-fiction books from [Aozora Bunko][aozora] | May 2015  |
-| **news.json**      |     ~10.3M | Online news articles from various sources                 | June 2015 |
-| **twitter.json**   |     ~10.0M | Twitter messages collected by a [bot][twitter-bot]        | June 2015 |
-| **wikipedia.json** |    ~784.6M | [Wikipedia dump][wiki-dumps] (see [`jawiki` bot][jawiki]) | May 2015  |
+| File             | # of kanji | Description                                               | Date      |
+| ---------------- | ---------: | --------------------------------------------------------- | --------- |
+| `aozora.json`    |     ~51.5M | Fiction and non-fiction books from [Aozora Bunko][aozora] | May 2015  |
+| `news.json`      |     ~10.3M | Online news articles from various sources                 | June 2015 |
+| `twitter.json`   |     ~10.0M | Twitter messages collected by a [bot][twitter-bot]        | June 2015 |
+| `wikipedia.json` |    ~784.6M | [Wikipedia dump][wiki-dumps] (see [`jawiki` bot][jawiki]) | May 2015  |
 
 Notes:
 
-- **aozora.json**: Pages were scanned as plain text, ignoring HTML structure, since they contain very little extra content.
-- **news.json**: Samples include articles published in the last year (June 2014 - June 2015, more samples from 2015), from 4 different sources. Only article titles, subtitles, main text body and image captions were scanned. Everything else was ignored: menus, publication dates, comments, ads, links to related articles, etc. Weather forecasts and area-specific news were not included.
-- **twitter.json**: Messages were collected within about 1 week from [Twitter's Streaming API][twitter-stream]. Only message text bodies were scanned, authors' names and other data ignored.
-- **wikipedia.json**: Dump included only current versions of pages and articles, without previous revisions or any other history of editing. Dump was scanned as plain text, ignoring XML and wiki markup structure.
+- `aozora.json`: Pages were scanned as plain text, ignoring HTML structure, since they contain very little extra content.
+- `news.json`: Samples include articles published in the last year (June 2014 - June 2015, more samples from 2015), from 4 different sources. Only article titles, subtitles, main text body and image captions were scanned. Everything else was ignored: menus, publication dates, comments, ads, links to related articles, etc. Weather forecasts and area-specific news were not included.
+- `twitter.json`: Messages were collected within about 1 week from [Twitter's Streaming API][twitter-stream]. Only message text bodies were scanned, authors' names and other data ignored.
+- `wikipedia.json`: Dump included only current versions of pages and articles, without previous revisions or any other history of editing. Dump was scanned as plain text, ignoring XML and wiki markup structure.
 
 ## Which kanji are (not) included?
 
@@ -115,7 +115,7 @@ All files are encoded in UTF-8, without [byte order mark (BOM)][bom], and have u
 
 All files are encoded in UTF-8, without [byte order mark (BOM)][bom]. All files, except for `cjk-decomp-{VERSION}.txt`, have unix-style [line endings][eol], `LF`.
 
-#### kanji.json
+#### `data/kanji.json`
 
 Contains table with data for kanji, including radicals. Columns are:
 
@@ -132,15 +132,15 @@ Resrictions:
 - Each character must be listed on the left hand side in exactly one line in `cjk-decomp-{VERSION}.txt`
 - Each character *may* be listed on the left hand side in exactly one line in `cjk-decomp-override.txt`
 
-#### kanjivg.txt
+#### `data/kanjivg.txt`
 
 Simple list of characters which are present in KanjiVG project. Those are from the list of *.svg files in [KanjiVG's Github repository][kanjivg-github].
 
-#### cjk-decomp-{VERSION}.txt
+#### `data/cjk-decomp-{VERSION}.txt`
 
 Data file from [CJK Decompositions Data][cjk] project, see [description of its' format][cjk-format].
 
-#### cjk-decomp-override.txt
+#### `data/cjk-decomp-override.txt`
 
 Same format as `cjk-decomp-{VERSION}.txt`, except:
 
@@ -152,7 +152,7 @@ Special character `0` is used to distinguish invalid decompositions (which lead 
 
 NOTE: Strictly speaking, records in this file are not always "visual decompositions" (but most of them are). Instead, it's just an attempt to provide meaningful recommendations of kanji learning order.
 
-#### kanji-frequency/*.json
+#### `data/kanji-frequency/*.json`
 
 Kanji usage frequency data in [JSON][] format. Each file contain an array of arrays (rows). Each row contains three fields:
 
