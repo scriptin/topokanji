@@ -25,8 +25,10 @@ var // files
   KANJIVG_LIST = DATA_DIR + 'kanjivg.txt',
   CJK = DATA_DIR + 'cjk-decomp-0.4.0.txt',
   CJK_OVERRIDE = DATA_DIR + 'cjk-decomp-override.txt',
-  DEPS_PAIRS = KANJI_DEPS_DIR + '1-to-1.txt',
-  DEPS_MAP = KANJI_DEPS_DIR + '1-to-N.txt';
+  DEPS_PAIRS_TXT = KANJI_DEPS_DIR + '1-to-1.txt',
+  DEPS_PAIRS_JSON = KANJI_DEPS_DIR + '1-to-1.json',
+  DEPS_MAP_TXT = KANJI_DEPS_DIR + '1-to-N.txt',
+  DEPS_MAP_JSON = KANJI_DEPS_DIR + '1-to-N.json';
 
 command.init();
 
@@ -101,21 +103,33 @@ if (command.is(command.CMDS.show)) { // displaying list(s)
     .flatten()
     .value();
 
-  console.log('Writing 1-to-1 dependencies into ' + DEPS_PAIRS + ' ...');
-  fs.writeFileSync(DEPS_PAIRS, depsPairs.map(function (dep) {
+  console.log('Writing 1-to-1 dependencies into ' + DEPS_PAIRS_JSON + ' ...');
+  fs.writeFileSync(DEPS_PAIRS_JSON, JSON.stringify(depsPairs).replace(/\],/g, '],\n'), files.WRITE_UTF8);
+
+  console.log('Writing 1-to-1 dependencies into ' + DEPS_PAIRS_TXT + ' ...');
+  fs.writeFileSync(DEPS_PAIRS_TXT, depsPairs.map(function (dep) {
     return dep.join(' ');
   }).join('\n'), files.WRITE_UTF8);
 
-  console.log('Writing 1-to-N dependencies into ' + DEPS_MAP + ' ...');
-  fs.writeFileSync(DEPS_MAP, _.pairs(depsMap).map(function (dep) {
+  console.log('Writing 1-to-N dependencies into ' + DEPS_MAP_JSON + ' ...');
+  fs.writeFileSync(DEPS_MAP_JSON, JSON.stringify(depsMap).replace(/\],/g, '],\n'), files.WRITE_UTF8);
+
+  console.log('Writing 1-to-N dependencies into ' + DEPS_MAP_TXT + ' ...');
+  fs.writeFileSync(DEPS_MAP_TXT, _.pairs(depsMap).map(function (dep) {
     return dep[0] + ' ' + dep[1].join('');
   }).join('\n'), files.WRITE_UTF8);
 
   selectLists(true).forEach(function (freqTableName) {
-    var listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
-    console.log('Writing list: ' + listFileName + ' ...');
+    console.log('Building list: ' + freqTableName + ' ...');
     var finalList = buildList(freqDataSets[freqTableName]);
-    fs.writeFileSync(listFileName, format.splitInLines(finalList, 10));
+
+    var listFileName = FINAL_LISTS_DIR + freqTableName + '.json';
+    console.log('Writing list: ' + listFileName + ' ...');
+    fs.writeFileSync(listFileName, JSON.stringify(finalList).replace(/",/g, '",\n'), files.WRITE_UTF8);
+
+    listFileName = FINAL_LISTS_DIR + freqTableName + '.txt';
+    console.log('Writing list: ' + listFileName + ' ...');
+    fs.writeFileSync(listFileName, finalList.join('\n'), files.WRITE_UTF8);
   });
 
 } else if (

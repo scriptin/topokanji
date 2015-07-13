@@ -85,11 +85,27 @@ Kanji/radical must **NOT** appear in this list if it is:
 
 ## Files and formats
 
-Files in `lists` directory are final lists. They contain kanji grouped by 10 per line.
+### `lists` directory
 
-Files in `dependencies` directory are "flat" equivalents of CJK-decompositions (see below). `1-to-1.txt` has a format compatible with [tsort][] command line utility. `1-to-N.txt` is similar, but each line lists all "dependecies" at once. "Dependency" here roughly means "a component of the visual decomposition" for kanji.
+Files in `lists` directory are final lists.
 
-Files in `data` directory:
+- `*.txt` files contain lists as plain text, one character per line; those files can be interpreted as CSV/TSV files with a single column
+- `*.json` files contain lists as [JSON][] arrays
+
+All files are encoded in UTF-8, without [byte order mark (BOM)][bom], and have unix-style [line endings][eol], `LF`.
+
+### `dependencies` directory
+
+Files in `dependencies` directory are "flat" equivalents of CJK-decompositions (see below). "Dependency" here roughly means "a component of the visual decomposition" for kanji.
+
+- `1-to-1.txt` has a format compatible with [tsort][] command line utility; first character in each line is "target" kanji, second character is target's dependency or `0`
+- `1-to-1.json` contains a JSON array with the same data as in `1-to-1.txt`
+- `1-to-N.txt` is similar, but lists all "dependecies" at once
+- `1-to-N.json` contains a JSON object with the same data as in `1-to-N.txt`
+
+All files are encoded in UTF-8, without [byte order mark (BOM)][bom], and have unix-style [line endings][eol], `LF`.
+
+### `data` directory
 
 - `kanji.json` - data for kanji included in final ordered lists, including [radicals][kangxi]
 - `kanjivg.txt` - list of kanji from [KanjiVG][]
@@ -99,7 +115,7 @@ Files in `data` directory:
 
 All files are encoded in UTF-8, without [byte order mark (BOM)][bom]. All files, except for `cjk-decomp-{VERSION}.txt`, have unix-style [line endings][eol], `LF`.
 
-### kanji.json
+#### kanji.json
 
 Contains table with data for kanji, including radicals. Columns are:
 
@@ -116,15 +132,15 @@ Resrictions:
 - Each character must be listed on the left hand side in exactly one line in `cjk-decomp-{VERSION}.txt`
 - Each character *may* be listed on the left hand side in exactly one line in `cjk-decomp-override.txt`
 
-### kanjivg.txt
+#### kanjivg.txt
 
 Simple list of characters which are present in KanjiVG project. Those are from the list of *.svg files in [KanjiVG's Github repository][kanjivg-github].
 
-### cjk-decomp-{VERSION}.txt
+#### cjk-decomp-{VERSION}.txt
 
 Data file from [CJK Decompositions Data][cjk] project, see [description of its' format][cjk-format].
 
-### cjk-decomp-override.txt
+#### cjk-decomp-override.txt
 
 Same format as `cjk-decomp-{VERSION}.txt`, except:
 
@@ -136,7 +152,7 @@ Special character `0` is used to distinguish invalid decompositions (which lead 
 
 NOTE: Strictly speaking, records in this file are not always "visual decompositions" (but most of them are). Instead, it's just an attempt to provide meaningful recommendations of kanji learning order.
 
-### kanji-frequency/*.json
+#### kanji-frequency/*.json
 
 Kanji usage frequency data in [JSON][] format. Each file contain an array of arrays (rows). Each row contains three fields:
 
