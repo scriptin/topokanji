@@ -56,21 +56,7 @@ Initial unsorted list contains only kanji which are present in [KanjiVG][] proje
 
 Characters are split into components using [CJK Decompositions Data][cjk] project, along with "fixes" to simplify final lists and avoid characters which are not present in initial list.
 
-Statistical data of kanji usage frequencies was collected by processing raw textual data from various sources. Those are files in `data/kanji-frequency` directory (see format description below):
-
-| File             | # of kanji | Description                                               | Date      |
-| ---------------- | ---------: | --------------------------------------------------------- | --------- |
-| `aozora.json`    |     ~51.5M | Fiction and non-fiction books from [Aozora Bunko][aozora] | May 2015  |
-| `news.json`      |     ~10.3M | Online news articles from various sources                 | June 2015 |
-| `twitter.json`   |     ~10.0M | Twitter messages collected by a [bot][twitter-bot]        | June 2015 |
-| `wikipedia.json` |    ~784.6M | [Wikipedia dump][wiki-dumps] (see [`jawiki` bot][jawiki]) | May 2015  |
-
-Notes:
-
-- `aozora.json`: Pages were scanned as plain text, ignoring HTML structure, since they contain very little extra content.
-- `news.json`: Samples include articles published in the last year (June 2014 - June 2015, more samples from 2015), from 4 different sources. Only article titles, subtitles, main text body and image captions were scanned. Everything else was ignored: menus, publication dates, comments, ads, links to related articles, etc. Weather forecasts and area-specific news were not included.
-- `twitter.json`: Messages were collected within about 1 week from [Twitter's Streaming API][twitter-stream]. Only message text bodies were scanned, authors' names and other data ignored.
-- `wikipedia.json`: Dump included only current versions of pages and articles, without previous revisions or any other history of editing. Dump was scanned as plain text, ignoring XML and wiki markup structure.
+Statistical data of kanji usage frequencies was collected by processing raw textual data from various sources. See [kanji-frequency][] repository for details.
 
 ## Which kanji are (not) included?
 
@@ -154,11 +140,7 @@ NOTE: Strictly speaking, records in this file are not always "visual decompositi
 
 #### `data/kanji-frequency/*.json`
 
-Kanji usage frequency data in [JSON][] format. Each file contain an array of arrays (rows). Each row contains three fields:
-
-1. (string) Kanji itself. `"all"` is a special case in the first row.
-2. (integer) How many times it was found in the analyzed data set. For `"all"` it is a total number of kanji, including repetitions.
-3. (float) Fraction of total amount of data this character represents. For `"all"` it is `1` (i.e. 100%).
+See [kanji-frequency][] repository for details.
 
 ## Usage
 
@@ -214,3 +196,4 @@ This is a multi-license project. Choose any license from this list:
 [bom]: https://en.wikipedia.org/wiki/Byte_order_mark
 [eol]: https://en.wikipedia.org/wiki/Newline
 [mean-type]: https://en.wikipedia.org/wiki/Pythagorean_means
+[kanji-frequency]: https://github.com/scriptin/kanji-frequency
