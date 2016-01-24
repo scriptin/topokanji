@@ -134,7 +134,7 @@ Resrictions:
 
 #### `data/kanjivg.txt`
 
-Simple list of characters which are present in KanjiVG project. Those are from the list of *.svg files in [KanjiVG's Github repository][kanjivg-github].
+Simple list of characters which are present in KanjiVG project. Those are from the list of `*.svg` files in [KanjiVG's Github repository][kanjivg-github].
 
 #### `data/cjk-decomp-{VERSION}.txt`
 
