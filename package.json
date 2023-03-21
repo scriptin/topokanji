@@ -7,9 +7,10 @@
     "url": "https://github.com/scriptin/topokanji.git"
   },
   "private": true,
-  "main": "build.js",
+  "type": "module",
   "scripts": {
-    "build": "npx ts-node -T build.js",
+    "old:build": "node build.js",
+    "build": "npx ts-node-esm -T src/build.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -23,7 +24,10 @@
   "author": "Dmitry Shpika",
   "license": "(Apache-2.0+ OR CC-BY-4.0+ OR EPL-1.0+ OR LGPL-3.0+ OR MIT)",
   "dependencies": {
+    "@scriptin/is-han": "^1.0.1",
+    "@scriptin/jmdict-simplified-types": "^3.5.0",
     "@tsconfig/node-lts-strictest-esm": "^18.12.1",
+    "@types/lodash": "^4.14.191",
     "@types/node": "^18.15.5",
     "lodash": "^4.17.21",
     "minimist": "^1.2.8",
