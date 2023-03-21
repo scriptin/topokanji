@@ -1,3 +1,3 @@
-import { getKanjiList } from './list.js';
+import { getKanjiList } from './kanjiList.js';
 
 console.log(getKanjiList());

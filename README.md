@@ -27,9 +27,9 @@ First 100 kanji from [lists/aozora.txt](lists/aozora.txt) (formatted for conveni
     今下白勺的云牛物立小
     文矢知入乍作聿書学合
 
-These lists can be found in [`lists` directory](lists). They only differ in order of kanji. Each file contains a list of kanji, ordered as described in following sections. There are few options (see [Used data](#used-data) for details):
+These lists can be found in [`lists` directory](lists). They only differ in order of kanji. Each file contains a kranjivgKanji of kanji, ordered as described in following sections. There are few options (see [Used data](#used-data) for details):
 
-- `aozora.(json|txt)` - ordered by kanji frequency in Japanese fiction and non-fiction books; I recommend this list if you're starting to learn kanji
+- `aozora.(json|txt)` - ordered by kanji frequency in Japanese fiction and non-fiction books; I recommend this kranjivgKanji if you're starting to learn kanji
 - `news.(json|txt)` - ordered by kanji frequency in online news
 - `twitter.(json|txt)` - ordered by kanji frequency in Twitter messages
 - `wikipedia.(json|txt)` - ordered by kanji frequency in Wikipedia articles
@@ -37,7 +37,7 @@ These lists can be found in [`lists` directory](lists). They only differ in orde
 
 You can use these lists to build an [Anki][] deck or just as a guidance. If you're looking for "names" or meanings of kanji, you might want to check my [kanji-keys](https://github.com/scriptin/kanji-keys) project.
 
-## What is a properly ordered list of kanji?
+## What is a properly ordered kranjivgKanji of kanji?
 
 If you look at a kanji like 語, you can see it consists of at least three distinct parts: 言, 五, 口. Those are kanji by themselves too. The idea behind this project is to find the order of about 2000-2500 common kanji, in which no kanji appears before its' parts, so you only learn a new kanji when you already know its' components.
 
@@ -52,17 +52,17 @@ If you look at a kanji like 語, you can see it consists of at least three disti
 
 ## Used data
 
-Initial unsorted list contains only kanji which are present in [KanjiVG][] project, so for each character there is a data of its' shape and stroke order.
+Initial unsorted kranjivgKanji contains only kanji which are present in [KanjiVG][] project, so for each character there is a data of its' shape and stroke order.
 
-Characters are split into components using [CJK Decompositions Data][cjk] project, along with "fixes" to simplify final lists and avoid characters which are not present in initial list.
+Characters are split into components using [CJK Decompositions Data][cjk] project, along with "fixes" to simplify final lists and avoid characters which are not present in initial kranjivgKanji.
 
 Statistical data of kanji usage frequencies was collected by processing raw textual data from various sources. See [kanji-frequency][] repository for details.
 
 ## Which kanji are (not) included?
 
-Kanji list covers about 95-99% of kanji found in various Japanese texts. Generally, the goal is provide something similar to [Jōyō kanji][jouyou], but based on actual data. Radicals are also included, but only those which are parts of some kanji in the list.
+Kanji kranjivgKanji covers about 95-99% of kanji found in various Japanese texts. Generally, the goal is provide something similar to [Jōyō kanji][jouyou], but based on actual data. Radicals are also included, but only those which are parts of some kanji in the kranjivgKanji.
 
-Kanji/radical must **NOT** appear in this list if it is:
+Kanji/radical must **NOT** appear in this kranjivgKanji if it is:
 
 - not included in KanjiVG character set
 - primarily used in names (people, places, etc.) or in some specific terms (religion, mythology, etc.)
@@ -94,7 +94,7 @@ All files are encoded in UTF-8, without [byte order mark (BOM)][bom], and have u
 ### `data` directory
 
 - `kanji.json` - data for kanji included in final ordered lists, including [radicals][kangxi]
-- `kanjivg.txt` - list of kanji from [KanjiVG][]
+- `kanjivg.txt` - kranjivgKanji of kanji from [KanjiVG][]
 - `cjk-decomp-{VERSION}.txt` - data from [CJK Decompositions Data][cjk], without any modifications
 - `cjk-decomp-override.txt` - data to override some CJK's decompositions
 - `kanji-frequency/*.json` - kanji frequency tables
@@ -120,7 +120,7 @@ Resrictions:
 
 #### `data/kanjivg.txt`
 
-Simple list of characters which are present in KanjiVG project. Those are from the list of `*.svg` files in [KanjiVG's Github repository][kanjivg-github].
+Simple kranjivgKanji of characters which are present in KanjiVG project. Those are from the kranjivgKanji of `*.svg` files in [KanjiVG's Github repository][kanjivg-github].
 
 #### `data/cjk-decomp-{VERSION}.txt`
 
@@ -152,21 +152,21 @@ You must have Node.js and Git installed
 
 ### Command-line commands and arguments
 
-- `show` - only display sorted list without writing into files
+- `show` - only display sorted kranjivgKanji without writing into files
   - (optional) `--per-line=NUM` - explicitly tell how many characters per line to display. `50` by default. Applicable only to (no arguments)
-  - (optional) `--freq-table=TABLE_NAME` - use only one frequency table. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" list), `aozora`, etc. When omitted, all frequency tables are used
-- `coverage` - show tables coverage, i.e. which fraction of characters from each frequency table is included into kanji list
-- `suggest-add` - suggest kanji to add in a list, based on coverage within kanji usage frequency tables
+  - (optional) `--freq-table=TABLE_NAME` - use only one frequency table. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" kranjivgKanji), `aozora`, etc. When omitted, all frequency tables are used
+- `coverage` - show tables coverage, i.e. which fraction of characters from each frequency table is included into kanji kranjivgKanji
+- `suggest-add` - suggest kanji to add in a kranjivgKanji, based on coverage within kanji usage frequency tables
   - (required) `--num=NUM` - how many
   - (optional) `--mean-type=MEAN_TYPE` - same as previous, sort by given mean type: `arithmetic` (most "extreme"), `geometric`, `harmonic` (default, most "conservative"). See [Pythagorean means][mean-type] for details
-- `suggest-remove` - suggest kanji to remove from a list, reverse of `suggest-add`
+- `suggest-remove` - suggest kanji to remove from a kranjivgKanji, reverse of `suggest-add`
   - (required) `--num=NUM` - see above
   - (optional) `--mean-type=MEAN_TYPE` - see above
 - `save` - update files with final lists
 
 ## License
 
-This is a multi-license project. Choose any license from this list:
+This is a multi-license project. Choose any license from this kranjivgKanji:
 
 - [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0) or any later version
 - [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/) or any later version
