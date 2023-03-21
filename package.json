@@ -9,6 +9,7 @@
   "private": true,
   "main": "build.js",
   "scripts": {
+    "build": "npx ts-node -T build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -22,7 +23,14 @@
   "author": "Dmitry Shpika",
   "license": "(Apache-2.0+ OR CC-BY-4.0+ OR EPL-1.0+ OR LGPL-3.0+ OR MIT)",
   "dependencies": {
-    "lodash": "3.9.1",
-    "text-table": "0.2.0"
+    "@tsconfig/node-lts-strictest-esm": "^18.12.1",
+    "@types/node": "^18.15.5",
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.8",
+    "prettier": "^2.8.6",
+    "text-table": "0.2.0",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.2"
   }
 }

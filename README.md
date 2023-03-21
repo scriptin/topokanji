@@ -116,7 +116,7 @@ Resrictions:
 - No duplicates
 - Each character must be listed in `kanjivg.txt`
 - Each character must be listed on the left hand side in exactly one line in `cjk-decomp-{VERSION}.txt`
-- Each character *may* be listed on the left hand side in exactly one line in `cjk-decomp-override.txt`
+- Each character _may_ be listed on the left hand side in exactly one line in `cjk-decomp-override.txt`
 
 #### `data/kanjivg.txt`
 
@@ -153,7 +153,7 @@ You must have Node.js and Git installed
 ### Command-line commands and arguments
 
 - `show` - only display sorted list without writing into files
-  - (optional) `--per-line=NUM` - explicitly tell how many characters per line to display. `50` by default. Applicable only to (no  arguments)
+  - (optional) `--per-line=NUM` - explicitly tell how many characters per line to display. `50` by default. Applicable only to (no arguments)
   - (optional) `--freq-table=TABLE_NAME` - use only one frequency table. Table names are file names from `data/kanji-frequency` directory, without `.json` extension, e.g. `all` ("combined" list), `aozora`, etc. When omitted, all frequency tables are used
 - `coverage` - show tables coverage, i.e. which fraction of characters from each frequency table is included into kanji list
 - `suggest-add` - suggest kanji to add in a list, based on coverage within kanji usage frequency tables
