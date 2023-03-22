@@ -1,4 +1,4 @@
-import graphEdges, { emptyNode } from './graphEdges.js';
+import graphEdges from './graphEdges.js';
 import weightFunction from './weightFunction.js';
 import toposort from './toposort.js';
 import _ from 'lodash';
