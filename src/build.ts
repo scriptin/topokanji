@@ -5,8 +5,8 @@ import _ from 'lodash';
 import { isHan } from '@scriptin/is-han';
 
 console.log('sorting...');
-const sorted = toposort(graphEdges, weightFunction);
-sorted.reverse().filter((n) => n !== emptyNode && isHan(n));
+const sorted = toposort(graphEdges, weightFunction).filter((n) => isHan(n));
+sorted.reverse();
 
 const pretty = _.chunk(sorted, 60)
   .slice(0, 10)
