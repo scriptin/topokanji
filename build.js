@@ -42,16 +42,16 @@ var decompositions = cjk.readFromFile(CJK_OVERRIDE, cjk.readFromFile(CJK));
 console.log('Building list of dependency pairs...');
 var dependencies = deps.buildDependencyPairs(kanjiList, decompositions);
 
-function buildWeightFinction(freqData) {
+function buildWeightFunction(freqData) {
   return function (char) {
     return 1.0 - (freqData.frequency[char] || 0.0);
   };
 }
 
 function buildList(freqData) {
-  var weightFuntion = buildWeightFinction(freqData);
+  var weightFunction = buildWeightFunction(freqData);
   return _.without(
-    dag.toposort(dependencies, weightFuntion),
+    dag.toposort(dependencies, weightFunction),
     cjk.EMPTY_CHAR,
   ).reverse();
 }
