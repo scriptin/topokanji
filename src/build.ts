@@ -1,3 +1,5 @@
-import { getKanjiList } from './kanjiList.js';
+import kanjiList from './kanjiList.js';
+import graphEdges from './graphEdges.js';
 
-console.log(getKanjiList());
+console.log(kanjiList);
+console.log(graphEdges);
