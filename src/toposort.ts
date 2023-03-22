@@ -1,7 +1,5 @@
 import _ from 'lodash';
-
-export type Node = string;
-export type Edge = [Node, Node];
+import { Edge, Node } from './graphTypes.js';
 
 function hasIncomingEdges(node: Node, edges: Edge[]): boolean {
   for (const edge of edges) {
