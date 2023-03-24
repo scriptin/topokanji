@@ -4,7 +4,6 @@ import toposort from './toposort.js';
 import _ from 'lodash';
 import { isHan } from '@scriptin/is-han';
 import { selectWords } from './words.js';
-import jmdict from './jmdict/jmdict.js';
 
 console.log('Sorting kanji...');
 const kanjiList = toposort(graphEdges, weightFunction).filter((n) => isHan(n));
@@ -17,12 +16,10 @@ const kanjiListPretty = _.chunk(kanjiList, 60)
 console.log(kanjiListPretty);
 
 console.log('Selecting words...');
-const totalWords = jmdict.words.length;
-console.log(`Total words in the dictionary: ${totalWords}`);
-const selectedWords = selectWords(kanjiList);
+const nTopLemmas = 5000;
+console.log(`Using ${nTopLemmas} top lemmas`);
+const selectedWords = selectWords(kanjiList, nTopLemmas);
 console.log(`Found ${selectedWords.length} words`);
-const coveragePct = (selectedWords.length / totalWords) * 100;
-console.log(`Coverage = ${coveragePct.toFixed(2)}%`);
 
 const wordsPretty = selectedWords.map((w, idx) => {
   const kanji = w.kanji.filter((k) => k.common).map((k) => k.text);

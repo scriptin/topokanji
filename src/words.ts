@@ -1,7 +1,12 @@
 import jmdict from './jmdict/jmdict.js';
 import { JMdictWord } from '@scriptin/jmdict-simplified-types';
 import { isHan } from '@scriptin/is-han';
+import getLemmas from './frequency/lemmas.js';
 
+/**
+ * Module-private mutable variable to speed up the processing.
+ * Needs to be reassigned every time, see {@link selectWords}
+ */
 let jmdictWords: JMdictWord[] = [];
 
 function getWords(seenKanjiList: string[]): JMdictWord[] {
@@ -48,8 +53,68 @@ function selectWordsRecursive(
   return selectWordsRecursive(kanjiList, seenKanjiList, selectedWords);
 }
 
-export function selectWords(kanjiList: string[]): JMdictWord[] {
+function filterWord(word: JMdictWord, lemmas: string[]): JMdictWord {
+  // Filter spellings matching the list of lemmas
+  const kanji = word.kanji.filter((k) => lemmas.includes(k.text));
+  const kanjiTexts = kanji.map((k) => k.text);
+
+  // Then, filter readings which apply to the filtered spellings
+  const kana = word.kana.filter(
+    (k) =>
+      k.appliesToKanji.includes('*') ||
+      k.appliesToKanji.some((atk) => kanjiTexts.includes(atk)),
+  );
+  const kanaTexts = kana.map((k) => k.text);
+
+  // Then, filter senses (translations) which apply to both filtered spellings and readings
+  const sense = word.sense.filter((s) => {
+    if (s.appliesToKanji.includes('*') && s.appliesToKana.includes('*')) {
+      // case 1: universal
+      return true;
+    }
+    if (
+      s.appliesToKanji.includes('*') &&
+      s.appliesToKana.some((atk) => kanaTexts.includes(atk))
+    ) {
+      // case 2: applies to any spelling, but only specific readings
+      return true;
+    }
+    if (
+      s.appliesToKanji.some((atk) => kanjiTexts.includes(atk)) &&
+      s.appliesToKana.includes('*')
+    ) {
+      // case 3: applies to only specific spellings, but any reading
+      // (unlikely to happen, but we need to make sure)
+      return true;
+    }
+    // case 4: applies to specific spellings and readings
+    return (
+      s.appliesToKanji.some((atk) => kanjiTexts.includes(atk)) &&
+      s.appliesToKana.some((atk) => kanaTexts.includes(atk))
+    );
+  });
+
+  return {
+    ...word,
+    kanji,
+    kana,
+    sense,
+  };
+}
+
+function getFilteredWords(nTopLemmas: number): JMdictWord[] {
+  const lemmas = getLemmas(nTopLemmas);
+  return jmdict.words
+    .filter((w) => w.kanji.some((kanji) => lemmas.includes(kanji.text)))
+    .map((word) => filterWord(word, lemmas));
+}
+
+export function selectWords(
+  kanjiList: string[],
+  nTopLemmas: number,
+): JMdictWord[] {
   const kanjiListCopy = [...kanjiList];
-  jmdictWords = [...jmdict.words];
+  // reassigning is required if we want to run this function multiple times
+  jmdictWords = getFilteredWords(nTopLemmas);
   return selectWordsRecursive(kanjiListCopy, [], []);
 }
